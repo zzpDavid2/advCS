@@ -1,5 +1,5 @@
-package advCS;
- 
+package war;
+
 import java.util.HashMap;
 
 public class Card {
