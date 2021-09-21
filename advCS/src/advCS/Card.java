@@ -1,7 +1,5 @@
 package advCS;
 
-import java.util.*;
-import java.io.*;
 import java.util.HashMap;
 
 public class Card {
