@@ -46,9 +46,9 @@ public class War {
     		Card C1 = P1.pollFirst();
     		Card C2 = P2.pollFirst();
     		
-    		System.out.print("Player 1 plays the");
+    		System.out.print("Player 1 plays the ");
     		System.out.println(C1);
-    		System.out.print("Player 2 plays the");
+    		System.out.print("Player 2 plays the ");
     		System.out.println(C2);
     		
     		if(C1.getNumber()>C2.getNumber()) {
@@ -60,7 +60,7 @@ public class War {
     			P2.addLast(C1);
     			P2.addLast(C2);
     		}else {
-    			System.out.println("Drew! Both cards are disgarded.");
+    			System.out.println("Draw! Both cards are disgarded.");
     		}
     		
     		N1 = P1.size();
@@ -75,6 +75,12 @@ public class War {
     			Win2 = true;
     			break;
     		}
+    		
+    		System.out.print("Player 1 have ");
+    		System.out.print(N1);
+    		System.out.print(" cards remaining; Player 2 have ");
+    		System.out.print(N2);
+    		System.out.print(" cards remaining.");
     		
     		System.out.println("Press ENTER to deal cards.");
         	scn.nextLine();
