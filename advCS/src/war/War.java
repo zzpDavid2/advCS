@@ -29,9 +29,16 @@ public class War {
     	LinkedList<Card> P1 = new LinkedList<Card>();
     	LinkedList<Card> P2 = new LinkedList<Card>();
     	
-    	for(int i=0; i<27;i++) {
+    	System.out.println("How many cards should each player get? (26 max)");
+    	int numCards = scn.nextInt();
+    	
+    	if(numCards >=26) {
+    		numCards = 26;
+    	}
+    	
+    	for(int i=0; i<numCards;i++) {
     		P1.add(deck.get(i));
-    		P2.add(deck.get(16+i));
+    		P2.add(deck.get(numCards+i));
     	}
     	
     	System.out.println("Cards are shuffled. Press ENTER to play!");
@@ -94,6 +101,8 @@ public class War {
     	if(Win2) {
     		System.out.println("Player2 is the winner!");
     	}
+    	
+    	scn.close();
     	
     }
     
