@@ -12,7 +12,9 @@ public class EnglishToArabicTranslator {
 		try {
 			in = new BufferedReader(new FileReader("EnglishToArabicDictionary.txt"));
 			String english = null;
+			in.readLine();
 			for(String line = in.readLine(); line != null; line = in.readLine() ) {
+				line = line.toLowerCase();
 				if(english == null) {
 					english = line;
 				}else {
@@ -28,7 +30,7 @@ public class EnglishToArabicTranslator {
 		
     	Scanner scn = new Scanner(System.in);
 		while(true) {
-			String input = scn.next();
+			String input = scn.nextLine().toLowerCase();
 			if(engToArab.containsKey(input)) {
 				System.out.print(engToArab.get(input));
 			}else if(arabToEng.containsKey(input)) {
