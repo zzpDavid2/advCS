@@ -1,9 +1,9 @@
 package compressor;
-
+ 
 import java.io.*;
 import java.util.*;
 
-public class Compresser {
+public class Compressor {
 	public static void main(String[] args) throws IOException {
 		
 		FileReader fr = new FileReader("Compressor.txt");
