@@ -3,6 +3,8 @@ package compressor;
 import java.io.*;
 import java.util.*;
 
+import myPriorityQueue.*;
+
 public class Compressor {
 	public static void main(String[] args) throws IOException {
 		
@@ -19,9 +21,17 @@ public class Compressor {
 			}
 		}
 		
-//		for(Map.Entry<Character, Integer> entry : map.entrySet()) {
-//			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
-//		}
+		for(Map.Entry<Character, Integer> entry : map.entrySet()) {
+			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+		}
+		
+		MyPriorityQueue<Character> pq = new MyPriorityQueue<Character> ();
+		
+		for(Character element : map.keySet()) {
+			pq.add(element, map.get(element));
+		}	
+		
+		System.out.print(pq);		
 		
 		
 	}
