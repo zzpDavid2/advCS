@@ -3,7 +3,9 @@ package compressor;
 import java.io.*;
 import java.util.*;
 
+import branch.*;
 import myPriorityQueue.*;
+import tuple.*;
 
 public class Compressor {
 	public static void main(String[] args) throws IOException {
@@ -25,13 +27,28 @@ public class Compressor {
 			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
 		}
 		
-		MyPriorityQueue<Character> pq = new MyPriorityQueue<Character> ();
+		fr.close();
+		
+		MyPriorityQueue<Branch<Tuple<Character, Integer>>> pq = new MyPriorityQueue<Branch<Tuple<Character, Integer>>> ();
 		
 		for(Character element : map.keySet()) {
-			pq.add(element, map.get(element));
+			Tuple<Character, Integer> t = new Tuple<Character, Integer>(element, map.get(element));
+			pq.add(new Branch<Tuple<Character, Integer>>(t, null, null, true), t.b);
 		}	
 		
-		System.out.print(pq);		
+		System.out.print(pq);	
+		
+		while(pq.size()>2) {
+			Branch<Tuple<Character, Integer>> left = pq.popBack();
+			Branch<Tuple<Character, Integer>> right = pq.popBack();
+			int p = left.data.b + right.data.b;
+			Tuple<Character, Integer> t = new Tuple<Character, Integer>(null, p);
+			Branch<Tuple<Character, Integer>> parent = new Branch<Tuple<Character, Integer>>(t, left, right, false);
+
+			pq.add(parent, parent.data.b);
+		}		
+		
+		Branch<Tuple<Character, Integer>> root = new Branch<Tuple<Character, Integer>>(null, pq.popBack(),pq.popBack(), false);
 		
 		
 	}

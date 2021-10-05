@@ -21,8 +21,12 @@ public class MyPriorityQueue<E> {
 		return d;
 	}
 	
-	public E pop() {
+	public E popFront() {
 		return (E) ll.remove(0).data;
+	}
+	
+	public E popBack() {
+		return (E) ll.remove(ll.size()-1).data;
 	}
 	
 	public int size() {

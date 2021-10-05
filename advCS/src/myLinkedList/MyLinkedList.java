@@ -20,7 +20,7 @@ public class MyLinkedList <E> {
 		
 	}
 	
-	public Object get(int n) {
+	public E get(int n) {
 		
 		if(n>=size) {
 			return null;			
@@ -35,7 +35,7 @@ public class MyLinkedList <E> {
 		return tar.data;
 	}
 	
-	public Object add(E d) {
+	public E add(E d) {
 		
 		Node newNode = new Node(d);
 		newNode.next = null;
