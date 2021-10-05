@@ -1,6 +1,6 @@
 package myLinkedList;
 
-public class MyLinkedList {
+public class MyLinkedList <E> {
 	private Node head;
 	
 	private int size;
@@ -11,10 +11,10 @@ public class MyLinkedList {
 	}
 	
 	class Node{
-		Object data;
+		E data;
 		Node next;
 		
-		Node(Object d) {
+		Node(E d) {
 			data = d;
 		}	
 		
@@ -35,7 +35,7 @@ public class MyLinkedList {
 		return tar.data;
 	}
 	
-	public Object add(Object d) {
+	public Object add(E d) {
 		
 		Node newNode = new Node(d);
 		newNode.next = null;
@@ -59,7 +59,7 @@ public class MyLinkedList {
 		return d;
 	}
 	
-	public Object add(int n, Object d) {
+	public E add(int n, E d) {
 		
 		if(n>=size) {
 			return null;			
@@ -81,7 +81,7 @@ public class MyLinkedList {
 		return d;
 	}
 	
-	public Object remove(int n) {
+	public E remove(int n) {
 		Node tar ;
 		Node prev = head;
 		Node next;
@@ -105,7 +105,7 @@ public class MyLinkedList {
 		
 		size--;
 		
-		return tar;
+		return (E) tar.data;
 	}
 	
 	public int size() {
