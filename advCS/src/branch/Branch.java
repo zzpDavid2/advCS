@@ -3,12 +3,12 @@ package branch;
 public class Branch <E> {
 	public E data;
 
-	public Branch<?> left;
-	public Branch<?> right;
+	public Branch<E> left;
+	public Branch<E> right;
 	
 	public boolean isLeaf;
 	
-	public Branch(E d, Branch<?> l, Branch<?> r, boolean b) {
+	public Branch(E d, Branch<E> l, Branch<E> r, boolean b) {
 		data = d;
 		left = l;
 		right = r;
