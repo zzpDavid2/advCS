@@ -5,7 +5,6 @@ import java.util.*;
 
 import branch.*;
 import myPriorityQueue.*;
-import tuple.*;
 
 public class Compressor {
 
