@@ -47,7 +47,6 @@ public class Compressor {
 			int rp = pq.frontPriority();
 			Branch<Character> right = pq.popFront();
 			int p = lp+rp;
-			Tuple<Character, Integer> t = new Tuple<Character, Integer>(null, p);
 			Branch<Character> parent = new Branch<Character>(left, right);
 
 			pq.add(parent, p);
