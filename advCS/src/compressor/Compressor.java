@@ -32,28 +32,29 @@ public class Compressor {
 		
 		fr1.close();
 		
-		MyPriorityQueue<Branch<Tuple<Character, Integer>>> pq = new MyPriorityQueue<Branch<Tuple<Character, Integer>>> ();
+		MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>();
 		
 		for(Character element : map.keySet()) {
-			Tuple<Character, Integer> t = new Tuple<Character, Integer>(element, map.get(element));
-			pq.add(new Branch<Tuple<Character, Integer>>(t, null, null, true), t.b);
+			pq.add(new Branch<Character>(element), map.get(element));
 		}	
 		
 		System.out.println(pq);	
 		
-		pq.add(new Branch<Tuple<Character, Integer>>(new Tuple<Character, Integer>(null, 0), null, null, true), 0);
+		pq.add(new Branch<Character>(null), -1);
 		
 		while(pq.size()>2) {
-			Branch<Tuple<Character, Integer>> left = pq.popFront();
-			Branch<Tuple<Character, Integer>> right = pq.popFront();
-			int p = left.data.b + right.data.b;
+			int lp = pq.frontPriority();
+			Branch<Character> left = pq.popFront();
+			int rp = pq.frontPriority();
+			Branch<Character> right = pq.popFront();
+			int p = lp+rp;
 			Tuple<Character, Integer> t = new Tuple<Character, Integer>(null, p);
-			Branch<Tuple<Character, Integer>> parent = new Branch<Tuple<Character, Integer>>(t, left, right, false);
+			Branch<Character> parent = new Branch<Character>(left, right);
 
-			pq.add(parent, parent.data.b);
+			pq.add(parent, p);
 		}		
 		
-		Branch<Tuple<Character, Integer>> root = new Branch<Tuple<Character, Integer>>(null, pq.popBack(),pq.popBack(), false);	
+		Branch<Character> root = new Branch<Character>(pq.popFront(),pq.popFront());	
 		
 		triverse(root,"");
 		
@@ -70,6 +71,8 @@ public class Compressor {
 		}
 		
 		result +=endMark;
+		
+		System.out.println(endMark);
 		
 		fr2.close();
 		
@@ -95,13 +98,13 @@ public class Compressor {
 		System.out.println(op);
 	}
 	
-	public static void triverse(Branch<Tuple<Character, Integer>> n, String prev) {
+	public static void triverse(Branch<Character> n, String prev) {
 		if(n.isLeaf) {
-			if(n.data.a == null) {
+			if(n.data == null && n.isLeaf) {
 				endMark = prev;
 				return;
 			}
-			table.put(n.data.a, prev);
+			table.put(n.data, prev);
 			return;
 		}else {
 			triverse(n.left, prev+"0");
