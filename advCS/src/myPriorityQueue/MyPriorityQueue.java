@@ -25,6 +25,10 @@ public class MyPriorityQueue<E> {
 		return (E) ll.remove(0).data;
 	}
 	
+	public int frontPriority() {
+		return ll.get(0).prio;
+	}
+	
 	public E popBack() {
 		return (E) ll.remove(ll.size()-1).data;
 	}

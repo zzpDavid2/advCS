@@ -8,11 +8,18 @@ public class Branch <E> {
 	
 	public boolean isLeaf;
 	
-	public Branch(E d, Branch<E> l, Branch<E> r, boolean b) {
+	public Branch(E d) {
 		data = d;
+		left = null;
+		right = null;
+		isLeaf = true;
+	}
+	
+	public Branch(Branch<E> l, Branch<E> r) {
+		data = null;
 		left = l;
 		right = r;
-		isLeaf = b;
+		isLeaf = false;
 	}
 	
 	public String toString() {
