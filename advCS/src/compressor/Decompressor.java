@@ -30,15 +30,16 @@ public class Decompressor {
 			table.put(key, c);
 			fr.read();
 		}
-		System.out.println(table);
 		
 		BufferedReader br = new BufferedReader(fr);
 		
 		br.readLine();
 		
 		String endMark = br.readLine();
+//		System.out.println(endMark);
 		
 		table.put(endMark, null);
+//		System.out.println(table);
 		
 		String ip = br.readLine();
 		
@@ -50,12 +51,15 @@ public class Decompressor {
 		
 		for(int i=0;i<ip.length();i++) {
 			int c = (int) ip.charAt(i);
+			System.out.println("New: " +c);
 			for(int j=7; j>=0; j--) {
 				int b = (int) (c / Math.pow(2, j));
 				c %= Math.pow(2, j);
+				System.out.println(Math.pow(2, j) + " " +b);
+				System.out.println(c);
 				if(b == 0) {
 					data += "0";
-				}else if(b ==1 ) {
+				}else if(b == 1) {
 					data += "1";
 				}
 			}
@@ -69,6 +73,8 @@ public class Decompressor {
 		for(int i=0; i<data.length(); i++) {
 			temp += data.charAt(i);
 			if(table.containsKey(temp)) {
+				System.out.println(temp);
+				System.out.println(table.get(temp));
 				if(table.get(temp) == null) {
 					return;
 				}

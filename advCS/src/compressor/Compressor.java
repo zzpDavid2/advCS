@@ -85,12 +85,16 @@ public class Compressor {
 		
 		for(int i=0; i<result.length(); i+= 8) {
 			int next = 0;
+			System.out.println("New char");
 			for(int j=0; j<8;j++) {
-				if(result.charAt(i+7-j) == '1' ) {
+				System.out.println(result.charAt(i+j));
+				if(result.charAt(i+j) == '1' ) {
 					next += Math.pow(2, 7-j);
 				}
 			}
 			op += (char) next;
+			System.out.println(next);
+			System.out.println((char) next);
 		}
 		
 		System.out.println(op);
