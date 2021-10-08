@@ -12,7 +12,7 @@ public class Compressor {
 	static String endMark;
 	public static void main(String[] args) throws IOException {
 		
-		FileReader fr1 = new FileReader("Compressor.txt");
+		FileReader fr1 = new FileReader("compressorIn.txt");
 		
 		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
 		
@@ -60,7 +60,7 @@ public class Compressor {
 		
 		String result = new String();
 		
-		FileReader fr2 = new FileReader("Compressor.txt");
+		FileReader fr2 = new FileReader("compressorIn.txt");
 		
 		for(int i = fr2.read(); i !=-1; i = fr2.read()) {
 			char c = (char) i;
@@ -74,7 +74,7 @@ public class Compressor {
 		
 		fr2.close();
 		
-		while(result.length()%16!=0) {
+		while(result.length()%8!=0) {
 			result += "0";
 		}
 		
@@ -94,6 +94,16 @@ public class Compressor {
 		}
 		
 		System.out.println(op);
+		
+		PrintWriter out = new PrintWriter(new File("compressorOut.txt"));
+		
+		for(Character element : table.keySet()) {
+		    out.println(element + " " + table.get(element));
+		}
+		out.println("fin");
+		out.println(endMark);
+	    out.println(op);
+	    out.close();
 	}
 	
 	public static void triverse(Branch<Character> n, String prev) {
