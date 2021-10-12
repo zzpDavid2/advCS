@@ -1,4 +1,4 @@
-package compressor;
+package compression;
 
 import java.io.*;
 import java.util.*;
@@ -36,18 +36,22 @@ public class Decompressor {
 		br.readLine();
 		
 		String endMark = br.readLine();
-//		System.out.println(endMark);
+		System.out.println(endMark);
 		
 		table.put(endMark, null);
-//		System.out.println(table);
+		System.out.println(table);
+		
+		br.readLine(); //remove when done
 		
 		String ip = br.readLine();
 		
 		System.out.println(ip);
 		
-		br.close();
-		
 		String data = "";
+		
+//		BufferedBitReader bbr = new BufferedBitReader(fr);
+		
+		br.close();
 		
 		for(int i=0;i<ip.length();i++) {
 			int c = (int) ip.charAt(i);
@@ -73,8 +77,8 @@ public class Decompressor {
 		for(int i=0; i<data.length(); i++) {
 			temp += data.charAt(i);
 			if(table.containsKey(temp)) {
-				System.out.println(temp);
-				System.out.println(table.get(temp));
+//				System.out.println(temp);
+				System.out.print(table.get(temp));
 				if(table.get(temp) == null) {
 					return;
 				}

@@ -1,4 +1,4 @@
-package compressor;
+package compression;
  
 import java.io.*;
 import java.util.*;
@@ -50,7 +50,7 @@ public class Compressor {
 			Branch<Character> parent = new Branch<Character>(left, right);
 
 			pq.add(parent, p);
-		}		
+		}	
 		
 		Branch<Character> root = new Branch<Character>(pq.popFront(),pq.popFront());	
 		
@@ -83,19 +83,19 @@ public class Compressor {
 		
 		String op = new String();
 		
-		for(int i=0; i<result.length(); i+= 8) {
-			int next = 0;
-			System.out.println("New char");
-			for(int j=0; j<8;j++) {
-				System.out.println(result.charAt(i+j));
-				if(result.charAt(i+j) == '1' ) {
-					next += Math.pow(2, 7-j);
-				}
-			}
-			op += (char) next;
-			System.out.println(next);
-			System.out.println((char) next);
-		}
+//		for(int i=0; i<result.length(); i+= 8) {
+//			int next = 0;
+//			System.out.println("New char");
+//			for(int j=0; j<8;j++) {
+//				System.out.println(result.charAt(i+j));
+//				if(result.charAt(i+j) == '1' ) {
+//					next += Math.pow(2, 7-j);
+//				}
+//			}
+//			op += (char) next;
+//			System.out.println(next);
+//			System.out.println((char) next);
+//		}
 		
 		System.out.println(op);
 		
@@ -108,6 +108,18 @@ public class Compressor {
 		out.println(endMark);
 	    out.println(op);
 	    out.close();
+	    
+		BufferedBitWriter bw = new BufferedBitWriter("compressorOut.txt");
+		
+		for(int i=0; i<result.length(); i++) {
+			if(result.charAt(i) == '1') {
+				bw.writeBit(true);
+			}else {
+				bw.writeBit(false);
+			}
+		}
+		
+		bw.close();
 	}
 	
 	public static void triverse(Branch<Character> n, String prev) {
