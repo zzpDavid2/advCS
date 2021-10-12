@@ -24,8 +24,8 @@ public class BufferedBitReader {
 	private BufferedReader input;	// our input stream
 
 	// initializes our variables
-	public BufferedBitReader(FileReader fis ) throws IOException {
-		input = new BufferedReader(fis);
+	public BufferedBitReader(BufferedReader br ) throws IOException {
+		input = br;
 
 		// immediately reads the first three bytes. If there is less than 2 bytes, the file 
 		// we are trying to read is not valid for the BufferedBitReader algorithm

@@ -106,7 +106,7 @@ public class Compressor {
 		}
 		out.println("fin");
 		out.println(endMark);
-	    out.println(op);
+//	    out.println(op);
 	    out.close();
 	    
 		BufferedBitWriter bw = new BufferedBitWriter("compressorOut.txt");

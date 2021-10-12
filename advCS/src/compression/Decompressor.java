@@ -37,37 +37,42 @@ public class Decompressor {
 		
 		String endMark = br.readLine();
 		System.out.println(endMark);
-		
 		table.put(endMark, null);
 		System.out.println(table);
 		
-		br.readLine(); //remove when done
-		
-		String ip = br.readLine();
-		
-		System.out.println(ip);
+//		String ip = br.readLine();
+//		System.out.println(ip);
 		
 		String data = "";
 		
-//		BufferedBitReader bbr = new BufferedBitReader(fr);
+		BufferedBitReader bbr = new BufferedBitReader(br);
 		
-		br.close();
-		
-		for(int i=0;i<ip.length();i++) {
-			int c = (int) ip.charAt(i);
-			System.out.println("New: " +c);
-			for(int j=7; j>=0; j--) {
-				int b = (int) (c / Math.pow(2, j));
-				c %= Math.pow(2, j);
-				System.out.println(Math.pow(2, j) + " " +b);
-				System.out.println(c);
-				if(b == 0) {
-					data += "0";
-				}else if(b == 1) {
-					data += "1";
-				}
+		while(bbr.hasNext()){
+			boolean b = bbr.readBit();
+			if(b) {
+				data += "1";
+			}else {
+				data += "0";
 			}
 		}
+		
+		bbr.close();
+		
+//		for(int i=0;i<ip.length();i++) {
+//			int c = (int) ip.charAt(i);
+//			System.out.println("New: " +c);
+//			for(int j=7; j>=0; j--) {
+//				int b = (int) (c / Math.pow(2, j));
+//				c %= Math.pow(2, j);
+//				System.out.println(Math.pow(2, j) + " " +b);
+//				System.out.println(c);
+//				if(b == 0) {
+//					data += "0";
+//				}else if(b == 1) {
+//					data += "1";
+//				}
+//			}
+//		}
 		
 		System.out.println(data);
 		
