@@ -137,6 +137,7 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 			}
 			char op = (char) next;
 			out.print(op);
+			System.out.println(op);
 //			System.out.println(next);
 //			System.out.println((char) next);
 			temp = temp.substring(8);
