@@ -10,11 +10,19 @@ public class Compressor {
 
 	static HashMap<Character, String> table = new HashMap<Character, String> ();
 	static String endMark;
+	static HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+	
 	public static void main(String[] args) throws IOException {
 		
-		FileReader fr1 = new FileReader("compressorIn.txt");
+		input();
 		
-		HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+		createCode();
+		
+		toFile();
+	}
+	
+	public static void input() throws IOException {
+		FileReader fr1 = new FileReader("compressorIn.txt");
 		
 		for(int i = fr1.read(); i !=-1; i = fr1.read()) {
 			char c = (char) i;
@@ -25,19 +33,21 @@ public class Compressor {
 			}
 		}
 		
-		for(Map.Entry<Character, Integer> entry : map.entrySet()) {
-			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
-		}
+//		for(Map.Entry<Character, Integer> entry : map.entrySet()) {
+//			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+//		}
 		
 		fr1.close();
-		
-		MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>();
+	}
+	
+	public static void createCode() {
+MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>();
 		
 		for(Character element : map.keySet()) {
 			pq.add(new Branch<Character>(element), map.get(element));
 		}	
 		
-		System.out.println(pq);	
+//		System.out.println(pq);	
 		
 		pq.add(new Branch<Character>(null), -1);
 		
@@ -58,68 +68,6 @@ public class Compressor {
 		
 		System.out.println(table);
 		
-		String result = new String();
-		
-		FileReader fr2 = new FileReader("compressorIn.txt");
-		
-		for(int i = fr2.read(); i !=-1; i = fr2.read()) {
-			char c = (char) i;
-			String next = table.get(c);
-			result += next;
-		}
-		
-		result +=endMark;
-		
-		System.out.println(endMark);
-		
-		fr2.close();
-		
-		while(result.length()%8!=0) {
-			result += "0";
-		}
-		
-		System.out.println(result);
-		
-		
-		String op = new String();
-		
-//		for(int i=0; i<result.length(); i+= 8) {
-//			int next = 0;
-//			System.out.println("New char");
-//			for(int j=0; j<8;j++) {
-//				System.out.println(result.charAt(i+j));
-//				if(result.charAt(i+j) == '1' ) {
-//					next += Math.pow(2, 7-j);
-//				}
-//			}
-//			op += (char) next;
-//			System.out.println(next);
-//			System.out.println((char) next);
-//		}
-		
-		System.out.println(op);
-		
-		PrintWriter out = new PrintWriter(new File("compressorOut.txt"));
-		
-		for(Character element : table.keySet()) {
-		    out.println(element + " " + table.get(element));
-		}
-		out.println("fin");
-		out.println(endMark);
-//	    out.println(op);
-	    out.close();
-	    
-		BufferedBitWriter bw = new BufferedBitWriter("compressorOut.txt");
-		
-		for(int i=0; i<result.length(); i++) {
-			if(result.charAt(i) == '1') {
-				bw.writeBit(true);
-			}else {
-				bw.writeBit(false);
-			}
-		}
-		
-		bw.close();
 	}
 	
 	public static void triverse(Branch<Character> n, String prev) {
@@ -136,4 +84,62 @@ public class Compressor {
 		}
 		
 	} 
+	
+	public static void toFile() throws IOException {
+		
+		FileReader fr = new FileReader("compressorIn.txt");
+		
+		BufferedBitWriter bw = new BufferedBitWriter("compressorOut.txt");
+		
+		System.out.println(endMark);
+		
+		PrintWriter out = new PrintWriter(new File("compressorOut.txt"));
+		
+		for(Character element : table.keySet()) {
+		    out.println(element + " " + table.get(element));
+		}
+		out.println("fin");
+		out.println(endMark);
+//	    out.println(op);
+	    out.close();
+	    
+	    String temp = "";
+	    
+		for(int i = fr.read(); i !=-1; i = fr.read()) {
+			char c = (char) i;
+			String next = table.get(c);
+//			System.out.println(next);
+			temp += next;
+			writeChar(temp,out);
+		}
+		
+		for(int i=0; i<endMark.length(); i++) {
+			if(endMark.charAt(i) == '1') {
+				bw.writeBit(true);
+			}else {
+				bw.writeBit(false);
+			}
+		}
+		
+		bw.close();
+		fr.close();
+	}
+	
+	public static void writeChar(String temp, PrintWriter out) {
+		while(temp.length()>8) {
+			int next = 0;
+//			System.out.println("New char");
+			for(int i=0; i<8;i++) {
+//				System.out.println(temp.charAt(i));
+				if(temp.charAt(i) == '1' ) {
+					next += Math.pow(2, 7-i);
+				}
+			}
+			char op = (char) next;
+			out.print(op);
+//			System.out.println(next);
+//			System.out.println((char) next);
+			temp = temp.substring(8);
+		}
+	}
 }

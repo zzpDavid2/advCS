@@ -6,12 +6,17 @@ import java.util.*;
 import java.io.IOException;
 
 public class Decompressor {
+	static HashMap<String, Character> table = new HashMap<String, Character>();
 
 	public static void main(String[] args) throws IOException {
 		FileReader fr = new FileReader("compressorOut.txt");
+
+		readMap(fr);
 		
-		HashMap<String, Character> table = new HashMap<String, Character>();
-		
+		decode(fr);
+	}
+	
+	public static void readMap(FileReader fr) throws IOException {
 		while(true) {
 			char c = (char) fr.read();
 //			System.out.println(c);
@@ -30,7 +35,9 @@ public class Decompressor {
 			table.put(key, c);
 			fr.read();
 		}
-		
+	}
+	
+	public static void decode(FileReader fr) throws IOException {
 		BufferedReader br = new BufferedReader(fr);
 		
 		br.readLine();
@@ -47,12 +54,25 @@ public class Decompressor {
 		
 		BufferedBitReader bbr = new BufferedBitReader(br);
 		
+		PrintWriter out = new PrintWriter("decompressorOut.txt");
+		
 		while(bbr.hasNext()){
 			boolean b = bbr.readBit();
 			if(b) {
 				data += "1";
+				System.out.print("1");
 			}else {
 				data += "0";
+				System.out.print("0");
+			}
+			if(table.containsKey(data)) {
+				if(table.get(data) == null) {
+					return;
+				}
+				char op = table.get(data);
+				System.out.print(op + " ");
+				out.print(op);
+				data = "";
 			}
 		}
 		
@@ -74,24 +94,5 @@ public class Decompressor {
 //			}
 //		}
 		
-		System.out.println(data);
-		
-		String op = "";
-		String temp = "";
-		
-		for(int i=0; i<data.length(); i++) {
-			temp += data.charAt(i);
-			if(table.containsKey(temp)) {
-//				System.out.println(temp);
-				System.out.print(table.get(temp));
-				if(table.get(temp) == null) {
-					return;
-				}
-				op += table.get(temp);
-				temp = "";
-			}
-		}
-		
-		System.out.println(op);
 	}
 }
