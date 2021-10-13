@@ -22,9 +22,9 @@ public class Compressor {
 	}
 	
 	public static void input() throws IOException {
-		FileReader fr1 = new FileReader("compressorIn.txt");
+		FileReader fr = new FileReader("compressorIn.txt");
 		
-		for(int i = fr1.read(); i !=-1; i = fr1.read()) {
+		for(int i = fr.read(); i !=-1; i = fr.read()) {
 			char c = (char) i;
 			if(map.containsKey(c)) {
 				map.put(c, map.get(c)+1);
@@ -37,7 +37,7 @@ public class Compressor {
 //			System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
 //		}
 		
-		fr1.close();
+		fr.close();
 	}
 	
 	public static void createCode() {
@@ -101,7 +101,7 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 		out.println("fin");
 		out.println(endMark);
 //	    out.println(op);
-	    out.close();
+
 	    
 	    String temp = "";
 	    
@@ -110,22 +110,24 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 			String next = table.get(c);
 //			System.out.println(next);
 			temp += next;
-			writeChar(temp,out);
+			temp = writeChar(temp,out);
 		}
 		
-		for(int i=0; i<endMark.length(); i++) {
-			if(endMark.charAt(i) == '1') {
-				bw.writeBit(true);
-			}else {
-				bw.writeBit(false);
-			}
+		temp += endMark;
+		
+		while(temp.length()<8) {
+			temp += "0";
 		}
 		
-		bw.close();
+		writeChar(temp, out);
+		
+	    out.close();
 		fr.close();
 	}
 	
-	public static void writeChar(String temp, PrintWriter out) {
+	public static String writeChar(String temp, PrintWriter out) {
+		System.out.println("writeChar");
+		System.out.println(temp);
 		while(temp.length()>8) {
 			int next = 0;
 //			System.out.println("New char");
@@ -137,10 +139,13 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 			}
 			char op = (char) next;
 			out.print(op);
+			
 			System.out.println(op);
 //			System.out.println(next);
 //			System.out.println((char) next);
 			temp = temp.substring(8);
 		}
+		System.out.println(temp);
+		return temp;
 	}
 }

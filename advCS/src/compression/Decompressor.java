@@ -14,6 +14,8 @@ public class Decompressor {
 		readMap(fr);
 		
 		decode(fr);
+		
+		fr.close();
 	}
 	
 	public static void readMap(FileReader fr) throws IOException {
@@ -47,23 +49,31 @@ public class Decompressor {
 		table.put(endMark, null);
 		System.out.println(table);
 		
-//		String ip = br.readLine();
+//		char ip = (char) fr.read();
+//		System.out.println(ip);
 //		System.out.println(ip);
 		
 		String data = "";
 		
-		BufferedBitReader bbr = new BufferedBitReader(br);
-		
 		PrintWriter out = new PrintWriter("decompressorOut.txt");
 		
-		while(bbr.hasNext()){
-			boolean b = bbr.readBit();
-			if(b) {
-				data += "1";
-				System.out.print("1");
-			}else {
-				data += "0";
-				System.out.print("0");
+//		System.out.print(fr.read());
+		
+		for(int i = br.read(); i !=-1; i = br.read()) {
+			int c = i;
+			System.out.println(c);
+			for(int j=7; j>=0; j--) {
+				int b = (int) (c / Math.pow(2, j));
+				c %= (int) Math.pow(2, j);
+				System.out.println((int) Math.pow(2, j) + " " +b);
+				System.out.println(c);
+				if(b == 0) {
+					data += "0";
+					System.out.print("0");
+				}else if(b == 1) {
+					data += "1";
+					System.out.print("1");
+				}
 			}
 			if(table.containsKey(data)) {
 				if(table.get(data) == null) {
@@ -74,25 +84,9 @@ public class Decompressor {
 				out.print(op);
 				data = "";
 			}
+
 		}
-		
-		bbr.close();
-		
-//		for(int i=0;i<ip.length();i++) {
-//			int c = (int) ip.charAt(i);
-//			System.out.println("New: " +c);
-//			for(int j=7; j>=0; j--) {
-//				int b = (int) (c / Math.pow(2, j));
-//				c %= Math.pow(2, j);
-//				System.out.println(Math.pow(2, j) + " " +b);
-//				System.out.println(c);
-//				if(b == 0) {
-//					data += "0";
-//				}else if(b == 1) {
-//					data += "1";
-//				}
-//			}
-//		}
-		
+		out.close();
+		br.close();
 	}
 }
