@@ -27,7 +27,7 @@ public class BufferedBitWriter {
 		currentByte = 0;
 		numBitsWritten = 0;
 		totalBytes = 0;
-		output = new BufferedOutputStream(new FileOutputStream(pathName,true));
+		output = new BufferedOutputStream(new FileOutputStream(pathName));
 	}
 
 	// "writes" a bit to the file (in reality, it only adds the bit to our 

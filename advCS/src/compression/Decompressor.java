@@ -3,8 +3,6 @@ package compression;
 import java.io.*;
 import java.util.*;
 
-import java.io.IOException;
-
 public class Decompressor {
 	static HashMap<String, Character> table = new HashMap<String, Character>();
 
@@ -52,41 +50,38 @@ public class Decompressor {
 //		char ip = (char) fr.read();
 //		System.out.println(ip);
 //		System.out.println(ip);
-		
-		String data = "";
-		
-		PrintWriter out = new PrintWriter("decompressorOut.txt");
-		
+			
 //		System.out.print(fr.read());
 		
-		for(int i = br.read(); i !=-1; i = br.read()) {
-			int c = i;
-			System.out.println(c);
-			for(int j=7; j>=0; j--) {
-				int b = (int) (c / Math.pow(2, j));
-				c %= (int) Math.pow(2, j);
-				System.out.println((int) Math.pow(2, j) + " " +b);
-				System.out.println(c);
-				if(b == 0) {
-					data += "0";
-					System.out.print("0");
-				}else if(b == 1) {
-					data += "1";
-					System.out.print("1");
-				}
+		BufferedBitReader bbr = new BufferedBitReader("compressedData.txt");
+		PrintWriter pr = new PrintWriter( new File("decompressorOut.txt"));
+		
+		String data = "";	
+
+		while(bbr.hasNext()){
+			boolean b = bbr.readBit();
+			if(b) {
+				data += "1";
+			}else {
+				data += "0";
 			}
 			if(table.containsKey(data)) {
+//				System.out.println(temp);
+				System.out.print(table.get(data));
 				if(table.get(data) == null) {
+					bbr.close();
+					br.close();
+					pr.close();					
 					return;
 				}
-				char op = table.get(data);
-				System.out.print(op + " ");
-				out.print(op);
+				pr.print(table.get(data));
 				data = "";
 			}
-
 		}
-		out.close();
+		
+		bbr.close();
 		br.close();
+		pr.close();
+
 	}
 }

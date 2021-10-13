@@ -1,1 +1,20 @@
 abcdefghijklmnopqrstuvwxyz
+Now that we have our tree built, it's time to finalize our project. Note: there are still many steps left, but they all go within your "Compressor" file. Here's what you'll want to do:
+
+Using your tree, built your codes. We'll do this using recursion. First, create a map, where the keys are the characters from your tree and the values are strings. These strings will represent the binary code for your compression codes. Inside your recursive function, start at the top of your tree. This should actually be the only branch remaining in your priority queue. You'll have one base case. This base case is when you reach a leaf. When you reach a leaf, add the current character/code pair to the map. There are two recursive steps. The first is to repeat the function for the left child, adding a '0' to the current code. The second is to repeat the function for the right child, adding a '1' to the current code. This is how we traverse a tree, and should build all your codes if used properly. Once complete, you should print your code map. If short codes are associated with common letters, and long codes with rare letters, you have a successful code builder. 
+Use this code map to write a compressed file. You have 2 options here. If you're feeling confident, come up with a way to write your compressed file (converting each character in the file to its code, then converting each code to a smaller form of storage). If not, you'll use my BufferedBitWriter (Links to an external site.) class. Either way, I'd recommend checking out this file. It has some cool bit-arithmetic. To compress, read your original file character by character. Each time you read a character, get it's corresponding code. Now, go through this code bit by bit. Use the BufferedBitWriter to write each bit. Once you've done this for every character, close the writer.
+Run your compressor - you should create a new file that looks like gibberish, and is smaller in size. Congratulations, you have compressed your file! However, we're only halfway done. We still need to be able to decompress.
+To decompress, we need the code map. The simplest way to do this is to generate a second txt file that holds your codes. At the end of your compressor file, create a new file writer. Inside it, store each character along with its code. How you do this is up to you. 
+Now you can decompress. Create a new decompressor Java file. It should start by reading your codemap txt file, and rebuilt the hash map. This time the codes will be keys and the characters will be values.
+Now, either use my BufferedBitReader (Links to an external site.) to read the compressed file bit by bit, or build your own translator. As you read, keep track of the current code. Each time you read, check if this current code is in the map. If it is, write the corresponding character to your new decompressed file. If it isn't, read another bit.
+At this stage, you're done with your decompressor. Run it and you should see that the decompressed file matches the original file perfectly.
+ 
+
+This is a real project! Which means I'll be looking for well-coded projects. Make sure you check out the below rubric:
+
+Commenting & Readability (yes, you should comment your code): 25 points
+Functionality & Efficiency of Custom Data Structures: 40 points
+Compression Functionality: 60 points
+Decompression Functionality: 50 points
+Code Text File: 10 points
+General Structure, Efficiency, Process: 15 points

@@ -21,11 +21,11 @@ public class BufferedBitReader {
 	private int afterNext;  // Byte two after the current byte
 	private int bitDigit;    // keeps track of which digit in the byte we are at
 
-	private BufferedReader input;	// our input stream
+	private BufferedInputStream input;	// our input stream
 
 	// initializes our variables
-	public BufferedBitReader(BufferedReader br ) throws IOException {
-		input = br;
+	public BufferedBitReader(String pathName) throws IOException {
+		input = new BufferedInputStream(new FileInputStream(pathName));
 
 		// immediately reads the first three bytes. If there is less than 2 bytes, the file 
 		// we are trying to read is not valid for the BufferedBitReader algorithm

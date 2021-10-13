@@ -89,7 +89,7 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 		
 		FileReader fr = new FileReader("compressorIn.txt");
 		
-		BufferedBitWriter bw = new BufferedBitWriter("compressorOut.txt");
+		BufferedBitWriter bbw = new BufferedBitWriter("compressedData.txt");
 		
 		System.out.println(endMark);
 		
@@ -100,52 +100,75 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 		}
 		out.println("fin");
 		out.println(endMark);
-//	    out.println(op);
 
-	    
-	    String temp = "";
-	    
 		for(int i = fr.read(); i !=-1; i = fr.read()) {
 			char c = (char) i;
 			String next = table.get(c);
 //			System.out.println(next);
-			temp += next;
-			temp = writeChar(temp,out);
+			for(int j=0; j<next.length(); j++){
+				if(next.charAt(j) == '1'){
+					bbw.writeBit(true);
+					System.out.print("1");
+				}else {
+					bbw.writeBit(false);
+					System.out.print("0");
+				}
+			}
 		}
 		
-		temp += endMark;
-		
-		while(temp.length()<8) {
-			temp += "0";
+		for(int i=0; i< endMark.length(); i++){
+			if(endMark.charAt(i) == '1'){
+				bbw.writeBit(true);
+			}else {
+				bbw.writeBit(false);
+			}
 		}
+	    
+//	    String temp = "";
+//	    
+//		for(int i = fr.read(); i !=-1; i = fr.read()) {
+//			char c = (char) i;
+//			String next = table.get(c);
+////			System.out.println(next);
+//			temp += next;
+//			temp = writeChar(temp,out);
+//		}
 		
-		writeChar(temp, out);
+//		temp += endMark;
+		
+//		while(temp.length()<8) {
+//			temp += "0";
+//		}
+		
+//		writeChar(temp, out);
 		
 	    out.close();
 		fr.close();
+		bbw.close();
 	}
 	
-	public static String writeChar(String temp, PrintWriter out) {
-		System.out.println("writeChar");
-		System.out.println(temp);
-		while(temp.length()>8) {
-			int next = 0;
-//			System.out.println("New char");
-			for(int i=0; i<8;i++) {
-//				System.out.println(temp.charAt(i));
-				if(temp.charAt(i) == '1' ) {
-					next += Math.pow(2, 7-i);
-				}
-			}
-			char op = (char) next;
-			out.print(op);
-			
-			System.out.println(op);
+//	public static String writeChar(String temp, PrintWriter out) {
+//		System.out.println("writeChar");
+//		System.out.println(temp);
+//		while(temp.length()>8) {
+//			int next = 0;
+////			System.out.println("New char");
+//			for(int i=0; i<8;i++) {
+////				System.out.println(temp.charAt(i));
+//				if(temp.charAt(i) == '1' ) {
+//					next += Math.pow(2, 7-i);
+//				}
+//			}
 //			System.out.println(next);
-//			System.out.println((char) next);
-			temp = temp.substring(8);
-		}
-		System.out.println(temp);
-		return temp;
-	}
+//			char op = (char) next;
+//			out.print(op);
+//			
+//			System.out.println(op);
+////			System.out.println(next);
+////			System.out.println((char) next);
+//			temp = temp.substring(8);
+//		}
+//		System.out.println(temp);
+//		return temp;
+//	}
 }
