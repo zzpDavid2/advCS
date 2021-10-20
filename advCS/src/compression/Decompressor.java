@@ -1,5 +1,7 @@
 package compression;
 
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.io.*;
 import java.util.*;
 
@@ -7,7 +9,13 @@ public class Decompressor {
 	static HashMap<String, Character> table = new HashMap<String, Character>();
 
 	public static void main(String[] args) throws IOException {
-		FileReader fr = new FileReader("compressorOut.txt");
+		FileDialog dialog = new FileDialog((Frame)null, "Select Map");
+	    dialog.setMode(FileDialog.LOAD);
+	    dialog.setVisible(true);
+	    String file = dialog.getFile();
+	    System.out.println(file + " chosen.");
+	    
+		FileReader fr = new FileReader(file);
 
 		readMap(fr);
 		
@@ -53,7 +61,15 @@ public class Decompressor {
 			
 //		System.out.print(fr.read());
 		
-		BufferedBitReader bbr = new BufferedBitReader("compressedData.txt");
+		FileDialog dialog = new FileDialog((Frame)null, "Select Data File");
+	    dialog.setMode(FileDialog.LOAD);
+	    dialog.setVisible(true);
+	    String file = dialog.getFile();
+	    System.out.println(file + " chosen.");
+		
+	    String decompressedFile = file.substring(0,file.length()-18) + "Decompressed.txt";
+	    
+		BufferedBitReader bbr = new BufferedBitReader(file);
 		PrintWriter pr = new PrintWriter( new File("decompressorOut.txt"));
 		
 		String data = "";	

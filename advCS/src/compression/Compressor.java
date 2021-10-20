@@ -2,15 +2,17 @@ package compression;
  
 import java.io.*;
 import java.util.*;
-
 import branch.*;
 import myPriorityQueue.*;
+import java.awt.*;
 
 public class Compressor {
 
 	static HashMap<Character, String> table = new HashMap<Character, String> ();
 	static String endMark;
 	static HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+	
+	static String file;
 	
 	public static void main(String[] args) throws IOException {
 		
@@ -22,8 +24,15 @@ public class Compressor {
 	}
 	
 	public static void input() throws IOException {
-		FileReader fr = new FileReader("compressorIn.txt");
-		
+		// file selector
+		FileDialog dialog = new FileDialog((Frame)null, "Select File to Compress");
+	    dialog.setMode(FileDialog.LOAD);
+	    dialog.setVisible(true);
+	    file = dialog.getFile();
+	    System.out.println(file + " chosen.");
+	    //create file reader
+		FileReader fr = new FileReader(file);
+		//create frequency map
 		for(int i = fr.read(); i !=-1; i = fr.read()) {
 			char c = (char) i;
 			if(map.containsKey(c)) {
@@ -42,15 +51,15 @@ public class Compressor {
 	
 	public static void createCode() {
 MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>();
-		
+		//put map in priority queue
 		for(Character element : map.keySet()) {
 			pq.add(new Branch<Character>(element), map.get(element));
 		}	
 		
 //		System.out.println(pq);	
-		
+		//put node of end mark in pq
 		pq.add(new Branch<Character>(null), -1);
-		
+		//create tree with pq
 		while(pq.size()>2) {
 			int lp = pq.frontPriority();
 			Branch<Character> left = pq.popFront();
@@ -87,13 +96,20 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 	
 	public static void toFile() throws IOException {
 		
-		FileReader fr = new FileReader("compressorIn.txt");
+		String compressedData = file.substring(0,file.length()-4) + "CompressedData.txt";
 		
-		BufferedBitWriter bbw = new BufferedBitWriter("compressedData.txt");
+		String compressionMap = file.substring(0,file.length()-4) + "CompressionMap.txt";
+		
+		System.out.println("Compressed data saved as " + compressedData);
+		System.out.print("Compression map saved as " + compressionMap);
+		
+		FileReader fr = new FileReader(file);
+		
+		BufferedBitWriter bbw = new BufferedBitWriter(compressedData);
 		
 		System.out.println(endMark);
 		
-		PrintWriter out = new PrintWriter(new File("compressorOut.txt"));
+		PrintWriter out = new PrintWriter(new File(compressionMap));
 		
 		for(Character element : table.keySet()) {
 		    out.println(element + " " + table.get(element));
