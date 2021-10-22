@@ -1,7 +1,5 @@
 package GroupActivity;
 
-import java.math.*;
-
 public class ProblemTwo {
     public static void main(String[] args){
     	boolean[] z = {true, true, false, true, false, false, true};
