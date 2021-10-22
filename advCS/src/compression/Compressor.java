@@ -30,8 +30,10 @@ public class Compressor {
 	    dialog.setVisible(true);
 	    file = dialog.getFile();
 	    System.out.println(file + " chosen.");
+	    
 	    //create file reader
 		FileReader fr = new FileReader(file);
+		
 		//create frequency map
 		for(int i = fr.read(); i !=-1; i = fr.read()) {
 			char c = (char) i;
@@ -59,6 +61,7 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 //		System.out.println(pq);	
 		//put node of end mark in pq
 		pq.add(new Branch<Character>(null), -1);
+		
 		//create tree with pq
 		while(pq.size()>2) {
 			int lp = pq.frontPriority();
@@ -70,16 +73,19 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 
 			pq.add(parent, p);
 		}	
-		
+		//collecting the built tree
 		Branch<Character> root = new Branch<Character>(pq.popFront(),pq.popFront());	
 		
+		//recursive function that creates the code table
 		triverse(root,"");
 		
 		System.out.println(table);
+		System.out.println(endMark);
 		
 	}
 	
 	public static void triverse(Branch<Character> n, String prev) {
+		//recursive function that creates the code table
 		if(n.isLeaf) {
 			if(n.data == null && n.isLeaf) {
 				endMark = prev;
@@ -95,19 +101,18 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 	} 
 	
 	public static void toFile() throws IOException {
-		
+		//setup names for output files
 		String compressedData = file.substring(0,file.length()-4) + "CompressedData.txt";
-		
 		String compressionMap = file.substring(0,file.length()-4) + "CompressionMap.txt";
 		
 		System.out.println("Compressed data saved as " + compressedData);
 		System.out.print("Compression map saved as " + compressionMap);
 		
+		//setting up file reader
 		FileReader fr = new FileReader(file);
 		
+		//setting up buffered bit writer custom funtion
 		BufferedBitWriter bbw = new BufferedBitWriter(compressedData);
-		
-		System.out.println(endMark);
 		
 		PrintWriter out = new PrintWriter(new File(compressionMap));
 		
@@ -117,6 +122,7 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 		out.println("fin");
 		out.println(endMark);
 
+		//encoding original text into compressed code
 		for(int i = fr.read(); i !=-1; i = fr.read()) {
 			char c = (char) i;
 			String next = table.get(c);
@@ -132,6 +138,7 @@ MyPriorityQueue<Branch<Character>> pq = new MyPriorityQueue<Branch<Character>>()
 			}
 		}
 		
+		//write the end mark
 		for(int i=0; i< endMark.length(); i++){
 			if(endMark.charAt(i) == '1'){
 				bbw.writeBit(true);

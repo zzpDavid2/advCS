@@ -9,6 +9,7 @@ public class Decompressor {
 	static HashMap<String, Character> table = new HashMap<String, Character>();
 
 	public static void main(String[] args) throws IOException {
+		//select input map file
 		FileDialog dialog = new FileDialog((Frame)null, "Select Map");
 	    dialog.setMode(FileDialog.LOAD);
 	    dialog.setVisible(true);
@@ -25,6 +26,7 @@ public class Decompressor {
 	}
 	
 	public static void readMap(FileReader fr) throws IOException {
+		//read code table
 		while(true) {
 			char c = (char) fr.read();
 //			System.out.println(c);
@@ -46,12 +48,17 @@ public class Decompressor {
 	}
 	
 	public static void decode(FileReader fr) throws IOException {
+		//set up reader
 		BufferedReader br = new BufferedReader(fr);
 		
+		//skipping a newline character
 		br.readLine();
 		
+		//read in end mark
 		String endMark = br.readLine();
 		System.out.println(endMark);
+		
+		//put end mark in the table
 		table.put(endMark, null);
 		System.out.println(table);
 		
@@ -61,19 +68,22 @@ public class Decompressor {
 			
 //		System.out.print(fr.read());
 		
+		//selecting input data file
 		FileDialog dialog = new FileDialog((Frame)null, "Select Data File");
 	    dialog.setMode(FileDialog.LOAD);
 	    dialog.setVisible(true);
 	    String file = dialog.getFile();
 	    System.out.println(file + " chosen.");
 		
+	    //set up output file name
 	    String decompressedFile = file.substring(0,file.length()-18) + "Decompressed.txt";
 	    
+	    //set up reader and writer
 		BufferedBitReader bbr = new BufferedBitReader(file);
-		PrintWriter pr = new PrintWriter( new File("decompressorOut.txt"));
+		PrintWriter pr = new PrintWriter( new File(decompressedFile));
 		
+		//decoding
 		String data = "";	
-
 		while(bbr.hasNext()){
 			boolean b = bbr.readBit();
 			if(b) {
