@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
@@ -70,7 +71,7 @@ public class ChatBot {
 		enter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {				
-				content = content + input.getText() +"\nAI: ";
+				content = content + input.getText();
 				
 			    java.util.List<String> lines = Arrays.asList(content);
 			    
@@ -86,12 +87,29 @@ public class ChatBot {
 			    input.setText("");
 			    
 				frame.getContentPane().repaint();
-						
+				
+//			    String userDirectory = new File("").getAbsolutePath();
+//				
+//				String command = "cmd.exe start python" +userDirectory+ "ChatBot.py";
+//				
+//				System.out.println(command);
+				
+				File python = new File("ChatBot.py");
+				
+				System.out.println(python.getAbsolutePath());
+				
+				String[] cmd = {"python", python.getAbsolutePath()};
 				try {
-					Runtime.getRuntime().exec("python ChatBot.py");
+					Process p = Runtime.getRuntime().exec(cmd);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 					System.out.println("Failed to started python");
+				}
+				
+				try {
+					TimeUnit.SECONDS.sleep(2);
+				} catch (InterruptedException e2) {
+					e2.printStackTrace();
 				}
 				
 				try {

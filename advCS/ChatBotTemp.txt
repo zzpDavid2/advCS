@@ -3,4 +3,9 @@ The following is a conversation with an AI assistant. The assistant is helpful, 
 Human: Hello, who are you?
 AI: I am an AI created by OpenAI. How can I help you today?
 Human: hi
-AI: 
+AI: Are you a researcher?
+Human: no I am just a friend
+AI: Very well! What do you need?
+Human: just someone to talk to
+AI: I am listening. What happened?
+Human: 
