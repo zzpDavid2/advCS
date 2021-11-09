@@ -2,7 +2,17 @@ import os
 import openai
 
 fileName = "ChatBotTemp.txt"
+<<<<<<< HEAD
 filePath = os.path.join(os.getcwd(), "advCS", fileName)
+=======
+
+thisPath = os.path.abspath(os.path.realpath(__file__))
+
+filePath = thisPath.replace("ChatBot.py", fileName)
+
+
+# filePath = os.path.dirname(fileName)
+>>>>>>> branch 'master' of https://github.com/zzpDavid2/advCS.git
 
 print(filePath)
 
@@ -15,7 +25,7 @@ restart_sequence = "\nHuman: "
 
 file.seek(0)
 
-myPrompt = file.read()
+myPrompt = file.read() + "\nAI:"
 
 response = openai.Completion.create(
   engine="davinci",
@@ -33,10 +43,13 @@ result = response.choices[0].text
 
 result = result.replace(u'\xa0', u' ')
 
-print(myPrompt +"\n")
-print("AI: " + result)
+print(result)
 
-file.write(result)
+file.write("AI:" + result)
 file.write("\n" + "Human: ")
 
+<<<<<<< HEAD
 file.close()
+=======
+file.close()
+>>>>>>> branch 'master' of https://github.com/zzpDavid2/advCS.git
