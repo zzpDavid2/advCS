@@ -1,11 +1,22 @@
 package graphics;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import javax.swing.*;
-import graphics.Shape;
+import Shapes.*;
+import Shapes.Rectangle;
+import Shapes.Shape;
 
 public class GraphicsEditor {
+	
+	private static ArrayList<Shape> shapes;
 	
 	private final int width = 1000, height = 667;
 	
@@ -16,11 +27,11 @@ public class GraphicsEditor {
 	private static JPanel settings;
 	
 	private static JButton save;
-	private static JTextArea lineWidth;
-	private static JTextArea  lineWidthIp;
+	private static JLabel lineWidth;
+	private static JTextField  lineWidthIp;
 	private static JButton colorPicker;
-	private static JTextArea  textSize;
-	private static JTextArea  textSizeIp;
+	private static JLabel  textSize;
+	private static JTextField  textSizeIp;
 	private static JButton delete;
 	private static JButton move;
 	private static JButton forward;
@@ -38,7 +49,10 @@ public class GraphicsEditor {
 
 	private static JPanel canvas;
 	
-	public GraphicsEditor() {
+	private static Class<?> currTool;
+	
+	public GraphicsEditor() {		
+		shapes = new ArrayList<Shape>();
 	   	    
 		frame = new JFrame();
 		
@@ -56,29 +70,19 @@ public class GraphicsEditor {
 		settings.setPreferredSize(new Dimension(width,20));
 		save = new JButton("Save");
 		
-		
-		
 		colorPicker = new JButton("Color Picker");
 		
-		lineWidth = new JTextArea();
+		lineWidth = new JLabel();
 		lineWidth.setText("Line Width:");
-		lineWidth.setEditable(false);
-		lineWidth.setBackground(new Color(0,0,0,0));
-		lineWidth.setPreferredSize(new Dimension(Short.MAX_VALUE,20));
-		lineWidth.setMaximumSize(new Dimension(Short.MAX_VALUE, lineWidth.getPreferredSize().height));
 		
-		lineWidthIp = new JTextArea();
+		lineWidthIp = new JTextField();
 		lineWidthIp.setText("");
 		lineWidthIp.setEditable(true);
 		
-		textSize = new JTextArea();
+		textSize = new JLabel();
 		textSize.setText("Text Size:");
-		textSize.setEditable(false);
-		textSize.setBackground(new Color(0,0,0,0));
-		textSize.setPreferredSize(new Dimension(Short.MAX_VALUE,20));
-		textSize.setMaximumSize(new Dimension(Short.MAX_VALUE, textSize.getPreferredSize().height));
 		
-		textSizeIp = new JTextArea();
+		textSizeIp = new JTextField();
 		textSizeIp.setText("");
 		textSizeIp.setEditable(true);
 		
@@ -127,7 +131,6 @@ public class GraphicsEditor {
 		tools.add(pen);
 		
 		bottom.setLayout(new BoxLayout(bottom, BoxLayout.X_AXIS));
-		
 		bottom.add(tools);
 		bottom.add(canvas);
 		
@@ -136,9 +139,76 @@ public class GraphicsEditor {
 		frame.setMinimumSize(new Dimension(width,height));
 		
 		frame.add(container);
+		
+		//create listeners
+		rectangle.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currTool = Rectangle.class;
+			}		
+		
+		});
+		circle.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currTool = Circle.class;
+			}		
+		
+		});
+		line.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currTool = Line.class;
+			}		
+		
+		});
+		
+		canvas.addMouseListener(new MouseListener() {
 
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				int x = e.getX();
+				int y = e.getY();
+				try {
+					shapes.add((Shape) currTool.getConstructor(currTool).newInstance(x,y,40,40));
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
+					e1.printStackTrace();
+				}
+				drawShapes(canvas.getGraphics());
+				frame.getContentPane().repaint();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}});
 		
 		frame.setVisible(true);
+	}
+	
+	public static void drawShapes(Graphics g) {
+		for(Shape s : shapes) {
+			s.draw(g);
+		}
 	}
 	
 	public static void main(String[] args){

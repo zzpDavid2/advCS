@@ -1,4 +1,4 @@
-package graphics;
+package Shapes;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,7 +19,7 @@ public abstract class Shape {
 		x = x2-x1; y = y2-y1;
 	}
 	
-	public abstract Shape copy();
+	public abstract Shape copy() throws CloneNotSupportedException;
 	public abstract void draw(Graphics g);
 	public abstract boolean isOn(int x, int y);
 	public abstract void resize(int x1, int y1, int x2, int y2);
