@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 public class Rectangle extends Shape {
 
-	public Rectangle(int x, int y, int w, int h, Color c) {
+	public Rectangle(Integer x, Integer y, Integer w, Integer h, Color c) {
 		super(x, y, w, h, c);
 	}
 
@@ -17,7 +17,7 @@ public class Rectangle extends Shape {
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(c);
-		g.drawRect(x, y, width, height);	
+		g.fillRect(getX(), getY(), width, height);	
 	}
 
 	@Override
@@ -28,8 +28,8 @@ public class Rectangle extends Shape {
 
 	@Override
 	public void resize(int a, int b, int w, int h) {
-		x=a;
-		y=b;
+		setX(a);
+		setY(b);
 		width = w;
 		height = h;
 	}

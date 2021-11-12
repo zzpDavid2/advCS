@@ -4,9 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Line extends Shape {
-
-	public Line(int x, int y, int w, int h, Color c) {
-		super(x, y, w, h, c);
+	int rootX, rootY;
+	
+	public Line(Integer x, Integer y, Integer w, Integer h, Color c) {
+		super(x, y, x, y, c);
+		rootX=x;
+		rootY=y;
 	}
 
 	@Override
@@ -17,7 +20,7 @@ public class Line extends Shape {
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(c);
-		g.fillOval(x, y, width, height);	
+		g.drawLine(getX(), getY(), width, height);	
 	}
 
 	@Override
@@ -27,10 +30,19 @@ public class Line extends Shape {
 	}
 
 	@Override
-	public void resize(int a, int b, int w, int h) {
-		x=a;
-		y=b;
-		width = w;
-		height = h;
+	public void resize(int x, int y, int h, int w) {
+		setX(rootX);
+		setY(rootY);
+		if(x+h == rootX) {
+			width = x;
+		}else {
+			width = x+h;
+		}
+		
+		if(y+w == rootY) {
+			height = y;
+		}else {
+			height = y+w;
+		}
 	}
 }

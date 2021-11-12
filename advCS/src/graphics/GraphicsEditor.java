@@ -7,6 +7,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -49,9 +51,20 @@ public class GraphicsEditor {
 
 	private static JPanel canvas;
 	
-	private static Class<?> currTool;
+	private static Constructor currTool;
 	
-	public GraphicsEditor() {		
+	private static Class[] shapeParameters = {Integer.class, Integer.class, Integer.class, Integer.class, Color.class};
+	
+	private static Color currColor;
+	
+	private static Shape currShape;
+	
+	private static int currRootX, currRootY;
+	
+	public GraphicsEditor() throws NoSuchMethodException, SecurityException {
+		currTool = Rectangle.class.getConstructor(shapeParameters);
+		currColor = Color.BLACK;
+		
 		shapes = new ArrayList<Shape>();
 	   	    
 		frame = new JFrame();
@@ -101,7 +114,18 @@ public class GraphicsEditor {
 		text = new JButton("Text");
 		pen = new JButton("Pen");
 		
-		canvas = new JPanel();
+		canvas = new JPanel() {
+			public void paint(Graphics g) {
+				super.paint(g);
+				for(Shape s : shapes) {
+					s.draw(g);
+				}
+			}
+		};
+		
+		canvas.setBackground(Color.WHITE);
+		canvas.setOpaque(true);
+		
 		canvas.setPreferredSize(new Dimension(1920,1080));
 		
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -144,21 +168,35 @@ public class GraphicsEditor {
 		rectangle.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currTool = Rectangle.class;
-			}		
+				try {
+					currTool = Rectangle.class.getConstructor(shapeParameters);
+				} catch (NoSuchMethodException | SecurityException e1) {
+					e1.printStackTrace();
+				}
+				System.out.println(currTool);
+			}	
+
 		
 		});
 		circle.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currTool = Circle.class;
+				try {
+					currTool = Circle.class.getConstructor(shapeParameters);
+				} catch (NoSuchMethodException | SecurityException e1) {
+					e1.printStackTrace();
+				}
 			}		
 		
 		});
 		line.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				currTool = Line.class;
+				try {
+					currTool = Line.class.getConstructor(shapeParameters);
+				} catch (NoSuchMethodException | SecurityException e1) {
+					e1.printStackTrace();
+				}
 			}		
 		
 		});
@@ -173,14 +211,15 @@ public class GraphicsEditor {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				int x = e.getX();
-				int y = e.getY();
+				currRootX = e.getX();
+				currRootY = e.getY();
 				try {
-					shapes.add((Shape) currTool.getConstructor(currTool).newInstance(x,y,40,40));
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1) {
+					currShape = (Shape) currTool.newInstance(currRootX,currRootY,0,0,currColor);
+					shapes.add(currShape);
+					System.out.println("draw");
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e1) {
 					e1.printStackTrace();
 				}
-				drawShapes(canvas.getGraphics());
 				frame.getContentPane().repaint();
 			}
 
@@ -202,16 +241,48 @@ public class GraphicsEditor {
 				
 			}});
 		
+		canvas.addMouseMotionListener(new MouseMotionListener(){
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				int x1 = currRootX;
+				int y1 = currRootY;
+				int x2 = e.getX();
+				int y2 = e.getY();
+				
+				
+				if(x2>=x1) {
+					if(y2>=y1) {
+						currShape.resize(x1, y1, x2-x1, y2-y1);
+						System.out.println("4");
+					}else {
+						currShape.resize(x1, y2, x2-x1, y1-y2);
+						System.out.println("1");
+					}
+				}else {
+					if(y2>=y1) {
+						currShape.resize(x2, y1, x1-x2, y2-y1);
+						System.out.println("3");
+					}else {
+						currShape.resize(x2, y2, x1-x2, y1-y2);
+						System.out.println("2");
+					}
+				}
+				
+				System.out.println(x2+ " " + y2);
+				frame.getContentPane().repaint();
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}});
+		
 		frame.setVisible(true);
 	}
 	
-	public static void drawShapes(Graphics g) {
-		for(Shape s : shapes) {
-			s.draw(g);
-		}
-	}
-	
-	public static void main(String[] args){
+	public static void main(String[] args) throws NoSuchMethodException, SecurityException{
 		new GraphicsEditor();
 	}
 }
