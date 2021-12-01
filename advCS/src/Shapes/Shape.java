@@ -11,6 +11,8 @@ public abstract class Shape {
 	protected int height;
 	protected Color c;
 	protected String type;
+	protected boolean isSelected;
+	
 	
 	public Shape(Integer x,Integer y, Integer w, Integer h, Color c) {
 		this.setX(x); this.setY(y);
@@ -24,8 +26,16 @@ public abstract class Shape {
 	
 	public abstract Shape copy() throws CloneNotSupportedException;
 	public abstract void draw(Graphics g);
-	public abstract boolean isOn(int x, int y);
 	public abstract void resize(int x1, int y1, int x2, int y2);
+	public abstract boolean Select(int x, int y);
+	
+	public void deselect() {
+		isSelected = false;
+	}
+	
+	public boolean isSelected() {
+		return isSelected;
+	}
 
 	public int getY() {
 		return y;
@@ -44,3 +54,5 @@ public abstract class Shape {
 	}
 	
 }
+
+

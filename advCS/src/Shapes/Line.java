@@ -24,12 +24,6 @@ public class Line extends Shape {
 	}
 
 	@Override
-	public boolean isOn(int x, int y) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public void resize(int x, int y, int h, int w) {
 		setX(rootX);
 		setY(rootY);
@@ -44,5 +38,11 @@ public class Line extends Shape {
 		}else {
 			height = y+w;
 		}
+	}
+
+	@Override
+	public boolean Select(int x, int y) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

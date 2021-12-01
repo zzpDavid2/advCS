@@ -12,58 +12,59 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import javax.swing.*;
+
 import Shapes.*;
-import Shapes.Rectangle;
 import Shapes.Shape;
 
 public class GraphicsEditor {
 	
-	private static ArrayList<Shape> shapes;
+	private ArrayList<Shape> shapes;
 	
 	private final int width = 1000, height = 667;
 	
-	private static JFrame frame;
+	private JFrame frame;
 	
-	private static JPanel container;
+	private JPanel container;
 
-	private static JPanel settings;
+	private JPanel settings;
 	
-	private static JButton save;
-	private static JLabel lineWidth;
-	private static JTextField  lineWidthIp;
-	private static JButton colorPicker;
-	private static JLabel  textSize;
-	private static JTextField  textSizeIp;
-	private static JButton delete;
-	private static JButton move;
-	private static JButton forward;
-	private static JButton back;
+	private JButton save;
+	private JLabel lineWidth;
+	private JTextField  lineWidthIp;
+	private JButton colorPicker;
+	private JLabel  textSize;
+	private JTextField  textSizeIp;
+	private JButton delete;
+	private JButton move;
+	private JButton forward;
+	private JButton back;
 	
-	private static JPanel bottom;
+	private JPanel bottom;
 
-	private static JPanel tools;
+	private JPanel tools;
 	
-	private static JButton rectangle;
-	private static JButton line;
-	private static JButton circle;
-	private static JButton text;
-	private static JButton pen;
+	private JButton select;
+	private JButton rectangle;
+	private JButton line;
+	private JButton circle;
+	private JButton text;
+	private JButton pen;
 
-	private static JPanel canvas;
+	private JPanel canvas;
 	
-	private static Constructor currTool;
+	private Constructor currTool;
 	
-	private static Class[] shapeParameters = {Integer.class, Integer.class, Integer.class, Integer.class, Color.class};
+	private Class[] shapeParameters = {Integer.class, Integer.class, Integer.class, Integer.class, Color.class};
 	
-	private static Color currColor;
+	private Color currColor;
 	
-	private static Shape currShape;
+	private Shape currShape;
 	
-	private static int currRootX, currRootY;
+	private int currRootX, currRootY;
 	
 	public GraphicsEditor() throws NoSuchMethodException, SecurityException {
 		currTool = Rectangle.class.getConstructor(shapeParameters);
-		currColor = Color.BLACK;
+		currColor = Color.RED;
 		
 		shapes = new ArrayList<Shape>();
 	   	    
@@ -108,6 +109,7 @@ public class GraphicsEditor {
 		
 		tools = new JPanel();
 		
+		select = new JButton("Select");
 		rectangle = new JButton("Rectangle");
 		line = new JButton("Line");
 		circle = new JButton("Circle");
@@ -148,6 +150,7 @@ public class GraphicsEditor {
 		
 		tools.setLayout(new BoxLayout(tools, BoxLayout.Y_AXIS));
 		
+		tools.add(select);
 		tools.add(rectangle);
 		tools.add(line);
 		tools.add(circle);
@@ -165,6 +168,15 @@ public class GraphicsEditor {
 		frame.add(container);
 		
 		//create listeners
+		select.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currTool = null;
+				System.out.println(currTool);
+			}	
+
+		
+		});
 		rectangle.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -205,12 +217,24 @@ public class GraphicsEditor {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				if(currTool == null) { 
+					for(Shape s : shapes) {
+						s.deselect();
+					}
+					System.out.println(shapes);
+					int x = e.getX();
+					int y = e.getY();
+					for(Shape s : shapes) {
+						s.Select(x, y);
+					}
+					System.out.println(shapes);
+					frame.getContentPane().repaint();
+					return;
+				}
 				currRootX = e.getX();
 				currRootY = e.getY();
 				try {
@@ -224,27 +248,24 @@ public class GraphicsEditor {
 			}
 
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void mouseReleased(MouseEvent e) {}
 
 			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void mouseEntered(MouseEvent e) {}
 
 			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}});
+			public void mouseExited(MouseEvent e) {}
+			
+		});
 		
 		canvas.addMouseMotionListener(new MouseMotionListener(){
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
+				if(currTool == null) {
+					return;
+				}
+				
 				int x1 = currRootX;
 				int y1 = currRootY;
 				int x2 = e.getX();
@@ -279,10 +300,47 @@ public class GraphicsEditor {
 				
 			}});
 		
+		container.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				int ip = e.getKeyCode();
+				if(ip == KeyEvent.VK_DELETE || ip == KeyEvent.VK_BACK_SPACE) {
+					deleteSelected();
+					System.out.println("delete");
+				}
+				frame.getContentPane().repaint();
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {}		
+		
+		});
+		
+		delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				deleteSelected();
+			}		
+		
+		});
+		
 		frame.setVisible(true);
+		container.requestFocusInWindow();
 	}
 	
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException{
 		new GraphicsEditor();
+	}
+	
+	private void deleteSelected() {
+		for(int i=0; i< shapes.size(); i++) {
+			if(shapes.get(i).isSelected()) {
+				shapes.remove(i);
+			}
+		}
+		frame.getContentPane().repaint();
 	}
 }

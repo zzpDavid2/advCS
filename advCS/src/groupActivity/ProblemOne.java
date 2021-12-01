@@ -1,4 +1,4 @@
-package GroupActivity;
+package groupActivity;
 
 public class ProblemOne {
     public static void main(String[] args){
