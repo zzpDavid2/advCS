@@ -6,8 +6,8 @@ import java.awt.Graphics;
 public class Line extends Shape {
 	int rootX, rootY;
 	
-	public Line(Integer x, Integer y, Integer w, Integer h, Color c) {
-		super(x, y, x, y, c);
+	public Line(Integer x, Integer y, Integer w, Integer h, Color c, String s) {
+		super(x, y, x, y, c, s);
 		rootX=x;
 		rootY=y;
 	}

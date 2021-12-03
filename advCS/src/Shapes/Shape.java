@@ -5,19 +5,20 @@ import java.awt.Graphics;
 
 public abstract class Shape {
 
-	private int x;
-	private int y;
+	protected int x;
+	protected int y;
 	protected int width;
 	protected int height;
 	protected Color c;
-	protected String type;
+	protected String content;
 	protected boolean isSelected;
 	
 	
-	public Shape(Integer x,Integer y, Integer w, Integer h, Color c) {
+	public Shape(Integer x,Integer y, Integer w, Integer h, Color c, String s) {
 		this.setX(x); this.setY(y);
 		width = w; height = h;
 		this.c = c;
+		this.content = s;
 	}
 	
 	public void move(int x1, int y1, int x2, int y2) {
@@ -53,6 +54,9 @@ public abstract class Shape {
 		this.x = x;
 	}
 	
+	public void setColor(Color color) {
+		this.c = color;
+	}
 }
 
 

@@ -49,6 +49,8 @@ public class DrawMaze {
 		tileWidth = width/maze[0].length;
 		tileHeight = height/maze.length;
 	    
+		System.out.println(tileWidth + " " + tileHeight);
+		
 		frame = new JFrame();
 		
 		frame.setSize(width, height);
@@ -68,7 +70,7 @@ public class DrawMaze {
 				int currX=0;
 				int currY=0;
 				for(int i=0; i< maze.length; i++) {
-
+					currX =0;
 					for(int j=0; j<maze[0].length; j++) {
 						if(maze[i][j]) {
 							//space
@@ -84,6 +86,8 @@ public class DrawMaze {
 				}
 			}
 		};
+		
+		canvas.setPreferredSize(new Dimension(650,650));
 		
 		frame.add(canvas);
 		
