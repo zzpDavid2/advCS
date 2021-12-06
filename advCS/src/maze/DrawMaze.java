@@ -60,6 +60,19 @@ public class DrawMaze {
 							//wall
 							g.fillRect(currX, currY, tileWidth, tileHeight);
 						}
+						
+						//give special color to start and ending point
+						if(maze[i][j]) {
+							if(j==0) {
+								g.setColor(Color.GREEN);
+								g.fillRect(currX, currY, tileWidth, tileHeight);
+								g.setColor(Color.BLACK);
+							}else if(j==maze[0].length - 1) {
+								g.setColor(Color.RED);
+								g.fillRect(currX, currY, tileWidth, tileHeight);
+								g.setColor(Color.BLACK);
+							}
+						}
 						currX += tileWidth;
 						
 					}
