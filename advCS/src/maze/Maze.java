@@ -1,9 +1,6 @@
 package maze;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.concurrent.TimeUnit;
 
 public class Maze {
 	boolean[][] maze; // the 2d boolean array that represent the maze

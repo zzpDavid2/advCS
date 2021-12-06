@@ -3,34 +3,11 @@ package maze;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import Shapes.Circle;
-import Shapes.Line;
-import Shapes.Shape;
-import graphics.GraphicsEditor;
 
 public class DrawMaze {
-
-	private ArrayList<Shape> shapes;
-	
 	private final int width = 650, height = 650;
 	
 	private JFrame frame;
