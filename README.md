@@ -1,2 +1,2 @@
 # advCS
-St. Mark's adanced cs personal files.
+St. Mark's adanced cs poeject and files.
