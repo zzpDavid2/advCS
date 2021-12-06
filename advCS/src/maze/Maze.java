@@ -22,7 +22,7 @@ public class Maze {
 	DrawMaze dm;
 	
 	public static void main(String[] args) throws InterruptedException {
-		//tests a 50 * 50 maze that is not too boring with not too fast animation
+		//tests a maze that is not too boring with not too fast animation
 		Maze m = new Maze(50, 50, 10, true, 5);
 		boolean[][] maze = m.generate();
 	}
@@ -50,10 +50,6 @@ public class Maze {
 		
 		go(start);	
 		
-		//poke through the boundary
-		maze[startHeight][0] = true;
-		maze[endHeight][width-1] = true;
-		
 		if(!ended) {
 			System.out.println("restarted");
 			maze = new boolean[height][width];
@@ -61,6 +57,12 @@ public class Maze {
 			return generate();
 		}
 //		printMaze();
+		
+		//poke through the boundary
+		maze[startHeight][0] = true;
+		maze[endHeight][width-1] = true;
+		
+		dm.update(maze);
 		
 		return maze;
 	}
@@ -88,10 +90,13 @@ public class Maze {
 		System.out.println("current: " + x + " " + y);
 		System.out.print(isOutOfBound(current) + " " );
 		System.out.print(maze[y][x]+ " ");
-		System.out.println(willClump(current));
+		System.out.println(willClump(current, 1));
 		
 		//check if is already went to or will clump;
-		if(maze[y][x] || willClump(current)) return;
+//		if(maze[y][x] || willClump(current, 1)) return;
+		
+		//this way it allows for loops but clumps more;
+		if(maze[y][x] || willClump(current, 3)) return;
 		
 		maze[y][x] = true;
 		
@@ -112,7 +117,7 @@ public class Maze {
 //			System.out.print(maze[nextY][nextX]+ " ");
 //			System.out.print(willClump(neighbor, current));
 			
-			if(isOutOfBound(neighbor) || maze[nextY][nextX] || willClump(neighbor)) continue;
+			if(isOutOfBound(neighbor) || maze[nextY][nextX] || willClump(neighbor, 1)) continue;
 				
 //			System.out.println(maze[nextY][nextX]+ " ");
 			System.out.println(x+directions[i][0] + " " + (int)(y+directions[i][1]));
@@ -140,7 +145,7 @@ public class Maze {
 	}
 	
 	//check if there will be more then 1 tile around a coordinate
-	private boolean willClump(int[] tar) {
+	private boolean willClump(int[] tar, int n) {
 		
 		int count = 0;
 		
@@ -152,7 +157,7 @@ public class Maze {
 			if(maze[y][x]) count ++;
 		}
 		
-		return count > 1;
+		return count > n;
 	}
 	
 	//checks if a coordinate is out of bound
