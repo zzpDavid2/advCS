@@ -46,6 +46,7 @@ public class DrawMaze {
 		
 		maze = m;
 		
+		//Variably adjust the tile width and height to fit in the frame.
 		tileWidth = width/maze[0].length;
 		tileHeight = height/maze.length;
 	    
@@ -65,10 +66,13 @@ public class DrawMaze {
 		
 		canvas = new JPanel() {
 			public void paint(Graphics g) {
+				//paint the maze
 				g.setColor(Color.BLACK);
 				super.paint(g);
 				int currX=0;
 				int currY=0;
+				
+				//draw or fill a rectangle according to the 2d boolean array
 				for(int i=0; i< maze.length; i++) {
 					currX =0;
 					for(int j=0; j<maze[0].length; j++) {
@@ -94,6 +98,7 @@ public class DrawMaze {
 		frame.setVisible(true);
 	}	
 	
+	//this method updates the graphics
 	public void update(boolean[][] m) {
 		maze = m;
 		canvas.repaint();
