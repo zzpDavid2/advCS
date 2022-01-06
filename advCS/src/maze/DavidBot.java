@@ -16,7 +16,6 @@ public class DavidBot extends Bot {
 	ArrayList<int[]> history = new ArrayList<int[]>();
 	int currT;
 	ArrayDeque<Boolean> nextSteps = new ArrayDeque<Boolean>(); //true is move; false is turn left
-//	ArrayDeque<int[]> nextTile = new ArrayDeque<int[]>();
 
 	public DavidBot(MazeRunner mr, Color c) {	
 		super(mr, c);
@@ -41,7 +40,7 @@ public class DavidBot extends Bot {
 		visited[currX][currY] = true;
 		
 		if(nextSteps.isEmpty()) {
-			System.out.println("T = " + currT);
+//			System.out.println("T = " + currT);
 			
 			//record the last order
 			int[] currLoc = new int[]{currX,currY} ;
@@ -52,7 +51,7 @@ public class DavidBot extends Bot {
 			}
 		}
 		
-		System.out.println(nextSteps);
+//		System.out.println(nextSteps);
 		
 		if(nextSteps.pop()) {
 			int nextX = currX + Dirs[currDir][0];
@@ -62,7 +61,7 @@ public class DavidBot extends Bot {
 				currY = nextY;
 				
 			}else {
-				System.out.println("Blocked");
+//				System.out.println("Blocked");
 				maze[nextX][nextY] = 1;
 				currT--;
 			}
@@ -80,11 +79,11 @@ public class DavidBot extends Bot {
 			int tarDir = (currDir + i)%4; 
 			int tarX = currX + Dirs[tarDir][0];
 			int tarY = currY + Dirs[tarDir][1];
-			System.out.println(tarDir);
+//			System.out.println(tarDir);
 			if(visited[tarX][tarY] || maze[tarX][tarY] == 1) {
 			}else {
 				moveTo(tarDir);
-				System.out.println("new: to " + tarDir);
+//				System.out.println("new: to " + tarDir);
 				currT++;
 				return true;
 			}
@@ -94,7 +93,7 @@ public class DavidBot extends Bot {
 	}
 	
 	public void toOld() {
-		System.out.println("old");
+//		System.out.println("old");
 		currT--;
 		for(int i=0; i<4; i++) {
 			int tarDir = (currDir + i)%4; 
