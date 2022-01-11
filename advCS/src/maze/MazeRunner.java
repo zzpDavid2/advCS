@@ -24,7 +24,7 @@ public class MazeRunner {
 	
 	// constructs and adds the bots competing into the maze
 	private void addBots() {
-		Bot[] bots = {new DavidBot(this, Color.ORANGE)};
+		Bot[] bots = {new DavidBot(this, Color.ORANGE), new CompareBot(this, Color.BLUE)};
 		for (Bot b : bots)
 			robots.put(b, new RobotInfo());
 	}

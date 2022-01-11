@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
-public class DavidBot extends Bot {
+public class CompareBot extends Bot {
 	
 	int[][] maze; // 0 is unknown; 1 is blocked; 2 is empty
 	boolean[][] visited;
@@ -14,13 +14,13 @@ public class DavidBot extends Bot {
 	int currDir; // 0 is right; 1 is up; 2 is back;  is down
 	int[][] Dirs = new int[][]{{1,0},{0,1},{-1,0},{0,-1}};
 	
-	int[] DirPrio = new int[] {0,1,3,2};
+	int[] DirPrio = new int[] {0,1,2,3};
 	
 	ArrayList<int[]> history = new ArrayList<int[]>();
 	int currT;
 	ArrayDeque<Boolean> nextSteps = new ArrayDeque<Boolean>(); //true is move; false is turn left
 
-	public DavidBot(MazeRunner mr, Color c) {	
+	public CompareBot(MazeRunner mr, Color c) {	
 		super(mr, c);
 		currX = 0;
 		currY = mr.ROWS;
