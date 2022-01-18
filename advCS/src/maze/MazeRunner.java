@@ -34,9 +34,9 @@ public class MazeRunner {
 	
 	private int WWIDTH = 700, WHEIGHT = 700;
 	public final int ROWS = 25, COLS = 25;
-	public int BOXW = WWIDTH / ROWS, BOXH = WHEIGHT / COLS;
-	public final int diff = 3; // scale starting from 1
-	public int count = 0;
+	private int BOXW = WWIDTH / ROWS, BOXH = WHEIGHT / COLS;
+	private final int diff = 3; // scale starting from 1
+	private int count = 0;
 	private boolean paused = false;
 
 	// true = white, false = black
@@ -65,7 +65,7 @@ public class MazeRunner {
 	public boolean move(Bot b) {
 		
 		// not allowed to move twice in one turn
-		if (b.equals(lastbot)&& robots.size()>1) {
+		if (b.equals(lastbot)) {
 			System.out.println(b.getClass() + " tried to move twice in one turn. Disqualified");
 			robots.put(b, null);
 			return false;
@@ -122,6 +122,17 @@ public class MazeRunner {
 			buildBranch(whites.remove(r), aim, length);
 			whites = whites();
 		}
+		
+		for (int i = 0; i < maze.length; i++) {
+			maze[i][0] = false;
+			maze[i][maze[0].length-1] = false;
+		}
+		for (int i = 0; i < maze[0].length; i++) {
+			maze[0][i] = false;
+			maze[maze.length-1][i] = false;
+		}
+		maze[begin.y][begin.x] = true;
+		maze[goal.y][goal.x] = true;
 	}
 	
 	private ArrayList<Point> whites() {
@@ -351,8 +362,9 @@ public class MazeRunner {
 		// runs the maze until a robot has reached the end
 		while (true) {
 			if (!paused) {
+				lastbot = null;
 				for(Bot b : robots.keySet()) {
-					if (robots.get(b) == null) {lastbot = b; continue;}
+					if (robots.get(b) == null) continue;
 					b.move();
 				}
 				count++;

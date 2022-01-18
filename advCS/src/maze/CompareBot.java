@@ -14,7 +14,7 @@ public class CompareBot extends Bot {
 	int currDir; // 0 is right; 1 is up; 2 is back;  is down
 	int[][] Dirs = new int[][]{{1,0},{0,1},{-1,0},{0,-1}};
 	
-	int[] DirPrio = new int[] {0,1,2,3};
+	int[] DirPrio = new int[] {123,0,1,3,2};
 	
 	ArrayList<int[]> history = new ArrayList<int[]>();
 	int currT;
@@ -80,6 +80,11 @@ public class CompareBot extends Bot {
 	public boolean toNew() {
 		for(int i : DirPrio) {
 			int tarDir = i; 
+			
+			if(i ==123) {
+				tarDir = currDir;
+			}
+			
 			int tarX = currX + Dirs[tarDir][0];
 			int tarY = currY + Dirs[tarDir][1];
 //			System.out.println(tarDir);
