@@ -1,10 +1,10 @@
-package graph;
+package labeledGraph;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayDeque;
 
-public class Graph<E> {
+public class Graph<E, T> {
 	HashMap<E, Vertex<E>> vertices;
 	
 	public Graph() {
@@ -21,12 +21,14 @@ public class Graph<E> {
 		return true;
 	}
 	
-	public void connect(E a, E b) {	
+	public void connect(E a, E b, T info) {	
 		Vertex<E> A = this.vertices.get(a);
 		Vertex<E> B = this .vertices.get(b);
 		
-		A.neighbors.add(B);
-		B.neighbors.add(A);
+		Edge<T> edge = new Edge<T>(A, B, info);
+		
+		A.neighbors.add(edge);
+		B.neighbors.add(edge);
 		
 		return;
 	}
@@ -35,10 +37,21 @@ public class Graph<E> {
 		Vertex<E> A = this.vertices.get(a);
 		Vertex<E> B = this .vertices.get(b);
 		
-		A.neighbors.remove(B);
-		B.neighbors.remove(A);
+		Edge<T> edge = findEdge(A, B);
+		
+		A.neighbors.remove(edge);
+		B.neighbors.remove(edge);
 		
 		return;
+	}
+	
+	public Edge<T> findEdge(Vertex<E> a, Vertex<E> b) {
+		for(Edge e : a.neighbors) {
+			if(e.getOpposit(a) == b) {
+				return e;
+			}
+		}
+		return null;
 	}
 	
 	public boolean contains(E info) {
@@ -56,8 +69,8 @@ public class Graph<E> {
 	public E remove(E info) {
 		Vertex<E> a = this.vertices.get(info);
 		
-		for(Vertex<E> b : a.neighbors) {
-			b.neighbors.remove(a);
+		for(Edge<T> e : a.neighbors) {
+			e.getOpposit(a).neighbors.remove(e);
 		}
 		
 		return info;
@@ -68,7 +81,7 @@ public class Graph<E> {
 	}
 	
 	public static void main(String[] args) {
-		Graph<String> g = new Graph<String>();
+		Graph<String, String> g = new Graph<String, String>();
 		
 		g.add("D");
 		
@@ -76,9 +89,9 @@ public class Graph<E> {
 		
 		g.add("L");
 		
-		g.connect("D","L");
+		g.connect("D","L", "Friend");
 		
-		g.connect("D", "C");
+		g.connect("D", "C", "Friend");
 		
 		g.add("H");
 		
@@ -94,12 +107,12 @@ public class Graph<E> {
 		g.add("Ivy");
 		g.add("Taylor");
 		
-		g.connect("David","Jason");
-		g.connect("David","Justin");
-		g.connect("Jason","Ian");
-		g.connect("Jason","Ivy");
-		g.connect("Ian","Ivy");
-		g.connect("Ivy", "Mr.Friedman");
+		g.connect("David","Jason", "Friend");
+		g.connect("David","Justin", "Friend");
+		g.connect("Jason","Ian", "Friend");
+		g.connect("Jason","Ivy", "Friend");
+		g.connect("Ian","Ivy", "Friend");
+		g.connect("Ivy", "Mr.Friedman", "Friend");
 		
 		g.bfs("David","Mr.Friedman");
 		
@@ -120,22 +133,23 @@ public class Graph<E> {
 			
 			Vertex<E> curr = toSearch.pop();
 			
-			System.out.println(curr);
+//			System.out.println(curr);
 			
 			if(curr == end) {
 				break;
 			}
 			
-			for(Vertex<E> v : (HashSet<Vertex<E>>) curr.neighbors) {
-				System.out.print(v + " ");
+			for(Edge<T> e : (HashSet<Edge>) curr.neighbors) {
+				
+				Vertex<E> v = e.getOpposit(curr);
+//				System.out.println(v);
 				if(!leadsTo.containsValue(v) && !leadsTo.containsKey(v)) {
 					leadsTo.put(v, curr);
 					toSearch.add(v);
 				}
 			}	
 			
-			System.out.println();
-			System.out.println();
+//			System.out.println();
 
 		}
 		
