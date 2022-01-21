@@ -58,6 +58,8 @@ public class KevinBaconGame {
 		String currMovie = "";
 		ArrayList<String> currGroup = new ArrayList<String>();
 		
+		int connectionCnt = 0;
+		
 		while(sc.hasNext()) {
 			String next = sc.nextLine();
 			int sep = next.indexOf('~');
@@ -75,6 +77,7 @@ public class KevinBaconGame {
 						System.out.println(a + " " + b + " " + m);
 						
 						g.connect(a, b, m);
+						connectionCnt ++;
 					}
 				}
 				
@@ -86,9 +89,13 @@ public class KevinBaconGame {
 			currGroup.add(actorID);
 		}
 		
-		System.out.println(g);
+//		System.out.println(g);
 		
 		sc.close();
+		
+		System.out.println(connectionCnt);
+		
+//		g.bfs("Evan Hudak", "Christopher George Sarris");
 		
 	}
 }

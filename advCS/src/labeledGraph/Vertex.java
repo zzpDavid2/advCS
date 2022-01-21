@@ -13,6 +13,6 @@ public class Vertex<E> {
 	}
 	
 	public String toString() {
-		return String.valueOf(neighbors.size());
+		return data.toString();
 	}
 }
