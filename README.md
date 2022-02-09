@@ -1,2 +1,2 @@
 # advCS
-St. Mark's adanced cs poeject and files.
+St. Mark's School Adanced CS course java poejects.
