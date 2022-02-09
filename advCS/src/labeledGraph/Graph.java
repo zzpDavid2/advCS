@@ -3,6 +3,7 @@ package labeledGraph;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class Graph<E, T> {
 	HashMap<E, Vertex<E>> vertices;
@@ -119,7 +120,7 @@ public class Graph<E, T> {
 //		System.out.println(g);
 	}
 	
-	public void bfs(String startS, String endS) {
+	public ArrayList<E> bfs(E startS, E endS) {
 		HashMap<Vertex<E>,Vertex<E>> leadsTo = new HashMap<Vertex<E>,Vertex<E>>();
 		
 		Vertex<E> start = (Vertex<E>) vertices.get(startS);
@@ -129,39 +130,82 @@ public class Graph<E, T> {
 		
 		toSearch.add(start);
 		
-		while(!toSearch.isEmpty()) {
+		boolean ended = false;
+		
+		while(!toSearch.isEmpty() && !ended) {
 			
 			Vertex<E> curr = toSearch.pop();
 			
-//			System.out.println(curr);
-			
-			if(curr == end) {
-				break;
-			}
+			System.out.println(curr);
 			
 			for(Edge<T> e : (HashSet<Edge>) curr.neighbors) {
 				
 				Vertex<E> v = e.getOpposit(curr);
-//				System.out.println(v);
-				if(!leadsTo.containsValue(v) && !leadsTo.containsKey(v)) {
+				
+				System.out.println(v);
+//				if(!leadsTo.containsValue(v) && !leadsTo.containsKey(v)) {
+				if(!leadsTo.containsKey(v)) {
 					leadsTo.put(v, curr);
 					toSearch.add(v);
 				}
+				
+				if(v == end) {
+					ended = true;
+					break;
+				}
 			}	
 			
-//			System.out.println();
+			System.out.println();
 
 		}
 		
+		System.out.println(leadsTo);
+		
+		ArrayList<E> op = new ArrayList<E>();
+		
 		Vertex<E> current = end;
+		Vertex<E> prev;
 		
 		System.out.print(end);
+		op.add(end.data);
 		
 		while(current != start) {
+			prev = current;
 			current = leadsTo.get(current);
-			System.out.print(" <- " + current);
+			
+//			System.out.println(prev + " " + current);
+			T edgeData = findEdge(prev,current).data;
+			
+			System.out.print(" <-(" + edgeData + ")- " + current);
+			op.add(current.data);
 		}
+		
+		return op;
 	}
 	
+	public ArrayList<T> getEdgeDataList(E info){
+		Vertex<E> v = (Vertex<E>) vertices.get(info);
+		
+		ArrayList<T> op = new ArrayList<T>();
+		
+		for(Edge<T> e : v.neighbors) {
+			System.out.println(e.data);
+			if(op.contains(e.data)) continue;
+			op.add(e.data);
+		}
+		
+		return op;
+		
+	}
+	
+	public T getEdgeData(E a, E b){
+		Vertex<E> A = this.vertices.get(a);
+		Vertex<E> B = this .vertices.get(b);
+		
+		T op = this.findEdge(A, B).data;
+		
+		return op;
+		
+	}
 	
 }
