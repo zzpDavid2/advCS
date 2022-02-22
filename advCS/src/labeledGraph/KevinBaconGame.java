@@ -31,13 +31,13 @@ import util.*;
 
 public class KevinBaconGame {
 	
-	private static Graph<String, String> g;
-	private static HashMap<String, String> actors;
-	private static HashMap<String, String> movies;
+	private static Graph<String, String> g; // the graph
+	private static HashMap<String, String> actors; // map from actor codes to actors
+	private static HashMap<String, String> movies; // map from movie codes to movies
 	
-	public static int connectionCnt = 0;
+	public static int connectionCnt = 0; // the variable that to the amount of connection when debugging code
 	
-	private static String[] actorList;
+	private static String[] actorList; // list that stores actors' name for the autocompletion
 	
 	public static void main(String args[]) throws IOException {
 		
@@ -45,11 +45,14 @@ public class KevinBaconGame {
 		
 		Scanner sc = new Scanner(java.nio.file.Paths.get("Movie:Actors", "actors.txt"));
 		
+		//reading the actors file to create the actors map
 		actors = new HashMap<String, String>();
+		
 		while(sc.hasNext()) {
-			String next = sc.nextLine();
-			int sep = next.indexOf('~');
-			String id = next.substring(0,sep);
+			String next = sc.nextLine(); // read a line
+			int sep = next.indexOf('~'); // find the index of the seperation charactor 
+			// splids the id from the name and stores them in the map and graph
+			String id = next.substring(0,sep); 
 			String name = next.substring(sep+1);
 			
 			actors.put(id, name);
@@ -58,10 +61,10 @@ public class KevinBaconGame {
 		
 		sc.close();
 		
-		actorList = new String[actors.size()];
+		// transfer the actors names to the list of names
+		actorList = new String[actors.size()]; 
 		
-		int i=0;
-		
+		int i=0; // for mapping values without index to a list with index
 		for(String s : actors.values()) {
 			actorList[i] = s;
 			i++;
@@ -69,6 +72,7 @@ public class KevinBaconGame {
 		
 //		System.out.println(actors);
 		
+		// read in the list of movies simular to above
 		sc = new Scanner(java.nio.file.Paths.get("Movie:Actors", "movies.txt"));
 		
 		movies = new HashMap<String, String>();
@@ -87,13 +91,15 @@ public class KevinBaconGame {
 		
 		sc.close();
 		
+		// read the file that stores the relationship in the graph
 		sc = new Scanner(java.nio.file.Paths.get("Movie:Actors", "movie-actors.txt"));
 		
 		//both of these stores ID
 		String currMovie = "";
-		ArrayList<String> currGroup = new ArrayList<String>();
+		ArrayList<String> currGroup = new ArrayList<String>(); // a temporary variable that stores actors in a same movie
 		
 		while(sc.hasNext()) {
+			// read a line and get the movie and actor IDs
 			String next = sc.nextLine();
 			int sep = next.indexOf('~');
 			String movieID = next.substring(0,sep);
@@ -102,7 +108,8 @@ public class KevinBaconGame {
 //			System.out.println(movieID + " " + currMovie);
 			
 			if(!movieID.equals(currMovie)) {
-				//connects the actors of previous group
+				//detects if it came to a new movie
+				//funtion that connects the actors of previous group
 				connectGroup(currGroup, currMovie);
 				
 				//create new movie group
@@ -110,11 +117,12 @@ public class KevinBaconGame {
 				currMovie = movieID;
 			}
 			
+			//add the new actor to the current group
 			currGroup.add(actorID);
 //			System.out.println(currGroup);
 		}
 		
-		connectGroup(currGroup, currMovie);
+		connectGroup(currGroup, currMovie); // connect the final group
 		
 //		System.out.println(g);
 		
@@ -124,10 +132,11 @@ public class KevinBaconGame {
 		
 //		g.bfs("Robert Downey Jr.", "Kevin Bacon");
 		
-		KevinBaconGame kbg = new KevinBaconGame();
+		KevinBaconGame kbg = new KevinBaconGame(); // start the graphics
 	}
 	
 	private static void connectGroup(ArrayList<String> currGroup, String currMovie) {
+		// Exhaust the combination of connections with a double loop
 		for(int i=0; i<currGroup.size(); i++) {
 			for(int j=i+1; j<currGroup.size(); j++) {
 				String a = actors.get(currGroup.get(i));
@@ -137,11 +146,13 @@ public class KevinBaconGame {
 //				System.out.println(m);
 //				System.out.println(a + " " + b + " " + m);
 				
-				g.connect(a, b, m);
-				connectionCnt ++;
+				g.connect(a, b, m); // connect in graph
+				connectionCnt ++; // count toward total connections
 			}
 		}
 	}
+	
+	//GUI
 	
 	private final int width = 1000, height = 667;
 	
@@ -149,20 +160,22 @@ public class KevinBaconGame {
 	
 	private JPanel container;
 	
-	private JPanel theActor;
+	//top section where the main actor of interest is input
+	private JPanel theActor; // the panel that contains this section
 	private JLabel  actorLabel;
 	private JButton play;
 	private AutoCompleteComboBox  actorInput;
 	
+	private JLabel  distanceFromKB;
+	private JLabel  farestPerson;
+	
+	//middle section where the movies an actor is in are listed
 	private JPanel inMovies;
 	private JLabel  moviesLabel;
 	private JTextArea  moviesList;
 	private JScrollPane scroll;
 	
-	private JLabel  distanceFromKB;
-	
-	private JLabel  farestPerson;
-	
+	//bottom section where the user can connect the main actor to another actor
 	private JPanel bfs;
 	private JLabel connectTo;
 	private AutoCompleteComboBox connectInput;
@@ -171,9 +184,10 @@ public class KevinBaconGame {
 	private JTextArea bfsOutput;
 	
 	public KevinBaconGame() {
+		//list of functionalities:
 		//The person
 		//All movies he was in
-		//Distence from Kevin Bacon
+		//Distance from Kevin Bacon
 		//farest person he is connected to
 		//bfs
 		
@@ -282,7 +296,9 @@ public class KevinBaconGame {
 			public void actionPerformed(ActionEvent e) {
 				moviesList.setText("Working...");
 				String actorName = actorInput.getSelectedItem().toString();
-				distanceFromKB.setText("Distance from Kevin Bacon: " + String.valueOf((g.bfs(actorName, "Kevin Bacon").size()-1)/2));
+				distanceFromKB.setText("Distance from Kevin Bacon: " + String.valueOf(g.bfs(actorName, "Kevin Bacon").size()-1));
+				
+//				System.out.println(g.bfs(actorName, "Kevin Bacon").size());
 				
 				String s_movieList = "";
 				ArrayList<String> l_movieList = g.getEdgeDataList(actorName);
