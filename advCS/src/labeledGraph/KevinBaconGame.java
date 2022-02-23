@@ -236,6 +236,7 @@ public class KevinBaconGame {
 		moviesList.setEditable(false);
 		moviesList.setPreferredSize(new Dimension(500,300));
 		
+		// creates a scroll pane for the movies list so that it can fit in a smaller area
 		JScrollPane scroll = new JScrollPane (moviesList, 
 				   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setMaximumSize(new Dimension(500,300));
@@ -277,7 +278,7 @@ public class KevinBaconGame {
 		container.add(theActor);
 		
 		container.add(distanceFromKB);
-		container.add(farestPerson);
+//		container.add(farestPerson);
 		
 		container.add(moviesLabel);
 		container.add(scroll);
@@ -291,11 +292,13 @@ public class KevinBaconGame {
 		frame.setVisible(true);
 		container.requestFocusInWindow();
 		
+		//the play button
 		play.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moviesList.setText("Working...");
 				String actorName = actorInput.getSelectedItem().toString();
+				//my bfs returns the path of actors as a list of their names
 				distanceFromKB.setText("Distance from Kevin Bacon: " + String.valueOf(g.bfs(actorName, "Kevin Bacon").size()-1));
 				
 //				System.out.println(g.bfs(actorName, "Kevin Bacon").size());
@@ -314,12 +317,14 @@ public class KevinBaconGame {
 		
 		});
 		
+		// the connect button
 		connect.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				bfsOutput.setText("Working...");
 				String actorName = actorInput.getSelectedItem().toString();
 				
+				// assembles the path with the connecting movies with the names of the actors in the path
 				ArrayList<String> path = g.bfs(actorName, connectInput.getSelectedItem().toString());
 				
 				String op = "";
@@ -332,6 +337,7 @@ public class KevinBaconGame {
 					prev = curr;
 					curr = path.get(i);
 					
+					// grabs edge data from the graph directly
 					String edgeData = g.getEdgeData(prev,curr);
 					
 					op +=" -(" + edgeData + ")-> " + curr;
