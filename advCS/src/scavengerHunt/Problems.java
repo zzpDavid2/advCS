@@ -22,6 +22,7 @@ public class Problems {
 		for(int i=0; i<ip.length(); i++) {
 			
 		}
+	}
 		
 	class CharFre {
 		int f;
@@ -32,5 +33,4 @@ public class Problems {
 			c = b;
 		}
 	}
-	
 }
