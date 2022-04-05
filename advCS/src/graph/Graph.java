@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.ArrayDeque;
 
 public class Graph<E> {
-	HashMap<E, Vertex<E>> vertices;
+	private HashMap<E, Vertex<E>> vertices;
 	
 	public Graph() {
 		vertices = new HashMap<E, Vertex<E>>();

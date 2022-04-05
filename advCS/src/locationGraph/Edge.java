@@ -19,6 +19,14 @@ public class Edge <T> {
 		return null;
 	}
 	
+	public Vertex getA() {
+		return v1;
+	}
+	
+	public Vertex getB() {
+		return v2;
+	}
+	
 	public String toString() {
 		return v1.toString() + "<-" + data.toString() + "->" + v2.toString();
 	}

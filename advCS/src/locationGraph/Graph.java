@@ -7,48 +7,63 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Graph<E, T> {
-	HashMap<E, Vertex<E, Double>> vertices;
+public class Graph<E, R, T> {
+	private HashMap<E, Vertex<E, R>> vertices;
+	
+	private HashSet<Edge<T>> edges;
 	
 	public Graph() {
-		vertices = new HashMap<E, Vertex<E, Double>>();
+		vertices = new HashMap<E, Vertex<E, R>>();
+		edges = new HashSet<Edge<T>>();
 	}
 	
-	public boolean add(E label) {
+	public HashMap<E, Vertex<E, R>> getVertices () {
+		return vertices;
+	}
+	
+	public HashSet<Edge<T>> getEdges () {
+		return edges;
+	}
+	
+	public boolean add(E label, R data) {
 		if(this.vertices.containsKey(label)) {
 			return false;
 		}
 		
-		vertices.put(label, new Vertex<E, Double>(label, Double.POSITIVE_INFINITY));
+		vertices.put(label, new Vertex<E, R>(label, data));
 		
 		return true;
 	}
 	
 	public void connect(E a, E b, T info) {	
-		Vertex<E, Double> A = this.vertices.get(a);
-		Vertex<E, Double> B = this .vertices.get(b);
+		Vertex<E, R> A = this.vertices.get(a);
+		Vertex<E, R> B = this .vertices.get(b);
 		
 		Edge<T> edge = new Edge<T>(A, B, info);
 		
 		A.neighbors.add(edge);
 		B.neighbors.add(edge);
 		
+		edges.add(edge);
+		
 		return;
 	}
 	
 	public void disconnect(E a, E b) {
-		Vertex<E, Double> A = this.vertices.get(a);
-		Vertex<E, Double> B = this .vertices.get(b);
+		Vertex<E, R> A = this.vertices.get(a);
+		Vertex<E, R> B = this .vertices.get(b);
 		
 		Edge<T> edge = findEdge(A, B);
 		
 		A.neighbors.remove(edge);
 		B.neighbors.remove(edge);
 		
+		edges.remove(edge);
+		
 		return;
 	}
 	
-	public Edge<T> findEdge(Vertex<E, Double> a, Vertex<E, Double> b) {
+	public Edge<T> findEdge(Vertex<E, R> a, Vertex<E, R> b) {
 		for(Edge e : a.neighbors) {
 			if(e.getOpposit(a) == b) {
 				return e;
@@ -61,7 +76,7 @@ public class Graph<E, T> {
 		return vertices.containsKey(info);
 	}
 	
-	public boolean isConnected(Vertex<E, Double> a, Vertex<E, Double> b) {	
+	public boolean isConnected(Vertex<E, R> a, Vertex<E, R> b) {	
 		return a.neighbors.contains(b) && b.neighbors.contains(a);
 	}
 	
@@ -70,7 +85,7 @@ public class Graph<E, T> {
 	}
 	
 	public E remove(E info) {
-		Vertex<E, Double> a = this.vertices.get(info);
+		Vertex<E, R> a = this.vertices.get(info);
 		
 		for(Edge<T> e : a.neighbors) {
 			e.getOpposit(a).neighbors.remove(e);
@@ -84,11 +99,13 @@ public class Graph<E, T> {
 	}
 	
 	public static void main(String[] args) {
-		Graph<String, Double> g = new Graph<String, Double>();
+		Graph<String, Double, Double> g = new Graph<String, Double, Double>();
 		
 		create_graph(g);
 		
 		g.dijkstrasAlgorithm("a", "d");
+		
+		
 	}
 	
 	/*
@@ -104,14 +121,14 @@ public class Graph<E, T> {
 	 * output: 10 (correct)
 	 */
 	
-	private static void create_graph(Graph<String, Double> g) {
+	private static void create_graph(Graph<String, Double, Double> g) {
 		Double inf = Double.POSITIVE_INFINITY;
-		g.add("a");
-		g.add("b");
-		g.add("c");
-		g.add("d");
-		g.add("e");
-		g.add("f");
+		g.add("a", 0.0);
+		g.add("b", 0.0);
+		g.add("c", 0.0);
+		g.add("d", 0.0);
+		g.add("e", 0.0);
+		g.add("f", 0.0);
 		
 		g.connect("a", "b", 6.0);
 		g.connect("a", "c", 1.0);
@@ -121,48 +138,57 @@ public class Graph<E, T> {
 		g.connect("e", "f", 3.0);	
 	}
 	
+	private HashMap<Vertex<E, R> ,Double> vertexToDistance = new HashMap<Vertex<E, R>,Double>();
+	
 	public ArrayList<E> dijkstrasAlgorithm(E startS, E endS){
-		PriorityQueue<Vertex<E, Double>> toVisit = new PriorityQueue<Vertex<E, Double>>(1, new Comparator() {
+
+		PriorityQueue<Vertex<E, R>> toVisit = new PriorityQueue<Vertex<E, R>>(1, new Comparator() {
 			@Override
 			public int compare(Object o1, Object o2) {
-				Vertex<String, Double> t1 = (Vertex<String, Double>) o1;
-				Vertex<String, Double> t2 = (Vertex<String, Double>) o2;
-				
-				return (int) (t1.data - t2.data);
+				Double d1 = vertexToDistance.get(o1);
+				Double d2 = vertexToDistance.get(o2);
+
+				return (int) (d1 - d2);
 			}
 		});
 		
-		HashSet<Vertex<E, Double>> visited = new HashSet<Vertex<E, Double>>();
+		HashSet<Vertex<E, R>> visited = new HashSet<Vertex<E, R>>();
 		
-		HashMap<Vertex<E, Double>,Vertex<E, Double>> leadsTo = new HashMap<Vertex<E, Double>,Vertex<E, Double>>();
+		HashMap<Vertex<E, R>,Vertex<E, R>> leadsTo = new HashMap<Vertex<E, R>,Vertex<E, R>>();
 		
-		Vertex<E, Double> start = (Vertex<E, Double>) vertices.get(startS);
-		Vertex<E, Double> end = (Vertex<E, Double>) vertices.get(endS);
+		Vertex<E, R> start = (Vertex<E, R>) vertices.get(startS);
+		Vertex<E, R> end = (Vertex<E, R>) vertices.get(endS);
 		
-		start.data = 0.0;
+		vertexToDistance.put(start, 0.0);
 		
 		toVisit.add(start);
 		
 		boolean isFinished = false;
 		
 		while(!isFinished) {
-			Vertex<E, Double> curr = toVisit.poll();
+			Vertex<E, R> curr = toVisit.poll();
 			if(curr == end) {
 				isFinished = true;
 				break;
 			}
 			
+			double currDis = vertexToDistance.get(curr);
+			
 			for(Edge<Double> e : curr.neighbors) {
-				Vertex<E, Double> n = e.getOpposit(curr);
+				Vertex<E, R> n = e.getOpposit(curr);
 				
 				if(visited.contains(n)) continue;
 				
-				n.data = Math.min(n.data, curr.data + e.data);
+				Double distance = currDis + e.data;
 				
-				// how does dijkstra's record the path we came in?
-//				if(!leadsTo.containsKey(v)) {
-//					leadsTo.put(v, curr);
-//				}
+				if(!vertexToDistance.containsKey(n)) {
+					vertexToDistance.put(n, Double.POSITIVE_INFINITY);
+				}
+				
+				if(vertexToDistance.get(n)> distance) {
+					leadsTo.put(n, curr);
+					vertexToDistance.put(n, distance);
+				}
 				
 				if(!toVisit.contains(n))toVisit.add(n);
 			}
@@ -170,19 +196,41 @@ public class Graph<E, T> {
 			visited.add(curr);
 		}
 		
-		System.out.println("End is " + end.data + "distance away.");
+		System.out.println("End is " + vertexToDistance.get(end) + " distance away.");
 		
-		return new ArrayList<E>();
+
+//		System.out.println(leadsTo);
+		
+		ArrayList<E> op = new ArrayList<E>();
+		
+		Vertex<E, R> current = end;
+		Vertex<E, R> prev;
+		
+		System.out.print(end);
+		op.add(end.label);
+		
+		while(current != start) {
+			prev = current;
+			current = leadsTo.get(current);
+			
+//			System.out.println(prev + " " + current);
+			T edgeData = findEdge(prev,current).data;
+			
+			System.out.print(" <-(" + edgeData + ")- " + current + "(" + vertexToDistance.get(current) + ")");
+			op.add(current.label);
+		}
+		
+		return op;
 		
 	}
 	
 	public ArrayList<E> bfs(E startS, E endS) {
-		HashMap<Vertex<E, Double>,Vertex<E, Double>> leadsTo = new HashMap<Vertex<E, Double>,Vertex<E, Double>>();
+		HashMap<Vertex<E, R>,Vertex<E, R>> leadsTo = new HashMap<Vertex<E, R>,Vertex<E, R>>();
 		
-		Vertex<E, Double> start = (Vertex<E, Double>) vertices.get(startS);
-		Vertex<E, Double> end = (Vertex<E, Double>) vertices.get(endS);
+		Vertex<E, R> start = (Vertex<E, R>) vertices.get(startS);
+		Vertex<E, R> end = (Vertex<E, R>) vertices.get(endS);
 		
-		ArrayDeque<Vertex<E, Double>> toSearch = new ArrayDeque<Vertex<E, Double>>();
+		ArrayDeque<Vertex<E, R>> toSearch = new ArrayDeque<Vertex<E, R>>();
 		
 		toSearch.add(start);
 		
@@ -190,13 +238,13 @@ public class Graph<E, T> {
 		
 		while(!toSearch.isEmpty() && !ended) {
 			
-			Vertex<E, Double> curr = toSearch.pop();
+			Vertex<E, R> curr = toSearch.pop();
 			
 			System.out.println(curr);
 			
 			for(Edge<T> e : (HashSet<Edge>) curr.neighbors) {
 				
-				Vertex<E, Double> v = e.getOpposit(curr);
+				Vertex<E, R> v = e.getOpposit(curr);
 				
 				System.out.println(v);
 //				if(!leadsTo.containsValue(v) && !leadsTo.containsKey(v)) {
@@ -219,8 +267,8 @@ public class Graph<E, T> {
 		
 		ArrayList<E> op = new ArrayList<E>();
 		
-		Vertex<E, Double> current = end;
-		Vertex<E, Double> prev;
+		Vertex<E, R> current = end;
+		Vertex<E, R> prev;
 		
 		System.out.print(end);
 		op.add(end.label);
@@ -239,7 +287,7 @@ public class Graph<E, T> {
 	}
 	
 	public ArrayList<T> getEdgeDataList(E info){
-		Vertex<E, Double> v = (Vertex<E, Double>) vertices.get(info);
+		Vertex<E, R> v = (Vertex<E, R>) vertices.get(info);
 		
 		ArrayList<T> op = new ArrayList<T>();
 		
@@ -254,8 +302,8 @@ public class Graph<E, T> {
 	}
 	
 	public T getEdgeData(E a, E b){
-		Vertex<E, Double> A = this.vertices.get(a);
-		Vertex<E, Double> B = this .vertices.get(b);
+		Vertex<E, R> A = this.vertices.get(a);
+		Vertex<E, R> B = this .vertices.get(b);
 		
 		T op = this.findEdge(A, B).data;
 		

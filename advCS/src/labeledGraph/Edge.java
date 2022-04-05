@@ -19,6 +19,7 @@ public class Edge <T> {
 		return null;
 	}
 	
+	
 	public String toString() {
 		return v1.toString() + "<-" + data.toString() + "->" + v2.toString();
 	}
