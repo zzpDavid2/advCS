@@ -1,6 +1,10 @@
 package locationGraph;
 
-public class Edge <T> {
+public class Edge <T> implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5053584663646773500L;
 	Vertex v1, v2;
 	T data;
 	

@@ -3,14 +3,20 @@ package locationGraph;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class Graph<E, R, T> {
-	private HashMap<E, Vertex<E, R>> vertices;
+public class Graph<E, R, T> implements java.io.Serializable  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7386911894745371926L;
+
+	protected HashMap<E, Vertex<E, R>> vertices;
 	
-	private HashSet<Edge<T>> edges;
+	protected HashSet<Edge<T>> edges;
 	
 	public Graph() {
 		vertices = new HashMap<E, Vertex<E, R>>();

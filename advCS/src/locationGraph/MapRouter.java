@@ -12,14 +12,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import java.awt.RenderingHints;
 import java.awt.Font;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -32,14 +36,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
 import Shapes.Shape;
+import util.Tuple;
 
 public class MapRouter {
 
-	private static Graph<String, int[], Double> graph; 
+	private static LocationGraph graph; 
 
 	public static void main(String args[]) throws IOException {
 		
@@ -62,16 +68,23 @@ public class MapRouter {
 	
 	private JFrame frame;
 	private JPanel container, buttons, canvas;
-	private JButton save, load, newSave;
+	private JButton save, load, newSave, setBackground;
+	private JToggleButton connect;
 	
-	private static File imageFile, saveFile;
-	private static BufferedImage image;
+	private HashSet<Edge<Double>> highlightEdges = new HashSet<Edge<Double>>();
 	
-	private static Vertex<String, int[]> selected = null;
+	private File imageFile, saveFile;
+	private ImageIcon imageIcon;
+	
+	private Vertex<String, int[]> selected = null;
+	
+	private Vertex<String, int[]> start, end;
+	
+	private boolean ranDijk = true;
 	
 	public MapRouter() {
 		
-		graph = new Graph<String, int[], Double>();
+		graph = new LocationGraph();
 		
 		// setup graphics  
 		frame = new JFrame();
@@ -89,11 +102,17 @@ public class MapRouter {
 		save = new JButton("Save");
 		load = new JButton("Load");
 		newSave = new JButton("New");
+		setBackground = new JButton("Set Background");
+		
+		connect = new JToggleButton("Connect");
 		
 		buttons.add(newSave);
 		buttons.add(save);
 		buttons.add(load);
-				
+		buttons.add(setBackground);
+		
+		buttons.add(connect);
+		
 		canvas = new JPanel() {
 
 			public void paint(Graphics g) {
@@ -101,53 +120,53 @@ public class MapRouter {
 				Graphics2D g2d = (Graphics2D) g;
 			    
 				//draw the background image
-			    g2d.drawImage(image, 0, 0, null);
-
-				 //draw edges
-			    g2d.setStroke(new BasicStroke(edgeStroke));
-				HashSet<Edge<Double>> edges = graph.getEdges();
-				for(Edge<Double> e : edges) {
-					//draws the edge
-					g2d.setColor(lineColor);
-					Vertex<String, int[]> A = e.getA();
-					Vertex<String, int[]> B = e.getB();
-					g2d.drawLine(A.data[0], A.data[1], B.data[0], B.data[1]);
-					
+				if(imageIcon != null) {
+				    imageIcon.paintIcon(canvas, g2d, 0, 0);
 				}
-			    
-				//draw the vertices
-				HashMap<String, Vertex<String, int[]>> vertices = graph.getVertices();
-				for(Vertex<String, int[]> v : vertices.values()) {
-					//draws the dot
-					g2d.setColor(vertexColor);
-					g2d.fillOval(v.data[0] - dotSize/2, v.data[1] - dotSize/2, dotSize, dotSize);
-					
-					//draws the text
-					g2d.setColor(textColor);
-					
-					Font font = new Font("Arial", Font.PLAIN, fontSize);
-		            g2d.setFont(font);
-		            FontMetrics fm = g2d.getFontMetrics();
-					
-					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					        RenderingHints.VALUE_ANTIALIAS_ON);
 
-					g2d.drawString(v.label, v.data[0] - fm.stringWidth(v.label)/2 , v.data[1] + dotSize/2 + fm.getAscent());
+				graph.drawEdges(g2d, new BasicStroke(edgeStroke), lineColor);
+				
+				for(Edge<Double> e : highlightEdges) {
+					graph.highlightEdge(g2d, e, new BasicStroke(edgeStroke), Color.RED);
+				}
+				
+				graph.drawVertices(g2d, dotSize, vertexColor, fontSize, textColor);
+				
+				if(selected != null) {
+					graph.outlineVertex(g2d, selected, new BasicStroke(selectStroke), dotSize, lineColor);
+				}
+				
+				if(start != null && end != null && ranDijk == false) {
+					if(ranDijk == false) {
+						ArrayList<String> path = graph.dijkstrasAlgorithm(start.label, end.label);
+						highlightEdges.clear();
+						HashMap<String, Vertex<String, int[]>> verticies = graph.getVertices();
+						for(int i=0; i<path.size()-1; i++) {
+							Vertex<String, int[]> curr = verticies.get(path.get(i));
+							Vertex<String, int[]> next = verticies.get(path.get(i+1));
+							Edge<Double> e = graph.findEdge(curr,next);
+							highlightEdges.add(e);
+							graph.highlightEdge(g2d, e, new BasicStroke(selectStroke), Color.RED);
+						}
+
+						ranDijk = true;
+					}
 					
-//				    //show a black outline when selected
-					if(selected == v) {
-					    g2d.setStroke(new BasicStroke(selectStroke));
-						g2d.setColor(lineColor);
-						g2d.drawOval(v.data[0] - dotSize/2, v.data[1] - dotSize/2, dotSize, dotSize);
+					for(Edge<Double> e : highlightEdges) {
+						graph.highlightEdge(g2d, e, new BasicStroke(selectStroke), Color.RED);
 					}
 				}
 			}
 		};
 		
+		
 		canvas.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 		
+		JScrollPane scroll = new JScrollPane (canvas, 
+				   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
 		container.add(buttons);
-		container.add(canvas);
+		container.add(scroll);
 		
 		frame.add(container);
 		
@@ -159,6 +178,20 @@ public class MapRouter {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				
+				saveFile = getSave();
+				
+				try {
+			         FileOutputStream fileOut =
+			         new FileOutputStream(saveFile);
+			         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+					 Tuple<LocationGraph, ImageIcon> t = new Tuple<LocationGraph, ImageIcon>(graph, imageIcon);
+			         out.writeObject(t);
+					 out.close();
+			         fileOut.close();
+			         System.out.printf("Serialized data is saved in " + saveFile.getAbsolutePath());
+			      } catch (IOException i) {
+			         i.printStackTrace();
+			      }
 			}
 			
 		});
@@ -167,6 +200,25 @@ public class MapRouter {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				saveFile = getLoad();
+				
+				try {
+					FileInputStream fileIn = new FileInputStream(saveFile);
+					ObjectInputStream in = new ObjectInputStream(fileIn);
+//					graph = (LocationGraph) in.readObject();
+					Tuple<LocationGraph, ImageIcon> t = (Tuple<LocationGraph, ImageIcon>) in.readObject();
+					graph = t.a;
+					imageIcon = t.b;
+					in.close();
+					fileIn.close();
+					} catch (IOException i) {
+					i.printStackTrace();
+				} catch (ClassNotFoundException c) {
+					System.out.println("Employee class not found");
+					c.printStackTrace();
+				}
+				
+				frame.repaint();
 			}
 			
 		});
@@ -174,10 +226,26 @@ public class MapRouter {
 		newSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				graph = new LocationGraph();
+				
+				imageIcon = null;
+
+				frame.repaint();
+			}
+			
+		});
+		
+		setBackground.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
 				imageFile = getImage();
 				if(imageFile != null) {
 					try {
-						image = ImageIO.read(imageFile);
+						BufferedImage image = ImageIO.read(imageFile);
+						imageIcon = new ImageIcon(image);
+						canvas.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(null, "Failed to load image.");
 						e1.printStackTrace();
@@ -185,7 +253,6 @@ public class MapRouter {
 				}else {
 					JOptionPane.showMessageDialog(null, "No image selected.");
 				}
-				saveFile = getSave();
 				
 				frame.repaint();
 			}
@@ -199,12 +266,13 @@ public class MapRouter {
 				int x = e.getX();
 				int y = e.getY();
 				Vertex<String, int[]> newSelected = selectVertex(x,y);
+				
 				if(selected == null && newSelected == null) {
 					//add a new vertex when nothing is selected
 					// and clicked on empty space
 					String label = JOptionPane.showInputDialog("Please input label for vertex:");
 					if(label != null) graph.add(label, new int[] {e.getX(), e.getY()});
-				}else if(selected != null && newSelected == null) {
+				}else if((selected != null && newSelected == null) || selected == newSelected) {
 					// de-select when clicked on empty space
 					selected = null;
 				}else if(selected == null && newSelected != null) {
@@ -212,10 +280,21 @@ public class MapRouter {
 					// and click on a vertex
 					selected = newSelected;
 				}else if(selected != null && newSelected != null) {
-					// connect the two vertex when a vertex was selected
-					double dis = calcDis(selected.data[0],selected.data[1], newSelected.data[0], newSelected.data[1]);
-					graph.connect(selected.label, newSelected.label, dis);
-					selected = null;
+					if(connect.isSelected()) {
+						// connect mode
+						start = selected;
+						end = newSelected;
+						ranDijk = false;
+						System.out.println(start + " " + end);
+						System.out.println(selected + " " + newSelected);
+						System.out.println(ranDijk);
+					}else {
+						// connect the two vertex when a vertex was selected
+						double dis = calcDis(selected.data[0],selected.data[1], newSelected.data[0], newSelected.data[1]);
+						graph.connect(selected.label, newSelected.label, dis);
+						selected = null;
+					}
+	
 				}
 				
 				frame.repaint();
@@ -273,7 +352,34 @@ public class MapRouter {
 	}
 	
 	private File getSave() {
-		return null;
+	    JFileChooser fileChooser= new JFileChooser(".");
+		fileChooser.setDialogTitle("Set Save Location");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Save Files", "txt", "ser");
+		fileChooser.setFileFilter(filter);
 		
+		int returnValue = fileChooser.showDialog(frame, "Save");
+	    if (returnValue == JFileChooser.APPROVE_OPTION) {
+	        saveFile = fileChooser.getSelectedFile();
+			System.out.println(saveFile.getAbsolutePath());
+	        return saveFile;
+	    }
+		return null;
 	}
+	
+	private File getLoad() {
+	    JFileChooser fileChooser= new JFileChooser(".");
+		fileChooser.setDialogTitle("Load Save File");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Save Files", "txt", "ser");
+		fileChooser.setFileFilter(filter);
+		
+		int returnValue = fileChooser.showDialog(frame, "Load");
+	    if (returnValue == JFileChooser.APPROVE_OPTION) {
+	        saveFile = fileChooser.getSelectedFile();
+			System.out.println(saveFile.getAbsolutePath());
+	        return saveFile;
+	    }
+		return null;
+	}
+	
+	
 }

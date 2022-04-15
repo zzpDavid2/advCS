@@ -2,7 +2,11 @@ package locationGraph;
 
 import java.util.HashSet;
 
-public class Vertex<E, R> {
+public class Vertex<E, R> implements java.io.Serializable  {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1886403274682823657L;
 	public E label;
 	public R data;
 	public HashSet<Edge> neighbors;
