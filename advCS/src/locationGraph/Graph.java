@@ -178,6 +178,8 @@ public class Graph<E, R, T> implements java.io.Serializable  {
 				break;
 			}
 			
+			System.out.println(curr);
+			
 			double currDis = vertexToDistance.get(curr);
 			
 			for(Edge<Double> e : curr.neighbors) {

@@ -267,7 +267,7 @@ public class MapRouter {
 				int y = e.getY();
 				Vertex<String, int[]> newSelected = selectVertex(x,y);
 				
-				if(selected == null && newSelected == null) {
+				if(selected == null && newSelected == null && !connect.isSelected()) {
 					//add a new vertex when nothing is selected
 					// and clicked on empty space
 					String label = JOptionPane.showInputDialog("Please input label for vertex:");
